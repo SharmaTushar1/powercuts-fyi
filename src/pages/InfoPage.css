@@ -1,0 +1,27 @@
+.info-page {
+  max-width: 640px;
+  padding-top: 48px;
+  padding-bottom: 96px;
+}
+
+.info-page h1 {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 8px 0 24px;
+}
+
+.info-page p {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--muted-2);
+  margin: 0 0 18px;
+}
+
+.support-note {
+  font-size: 12px;
+  color: var(--muted-1);
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 28px;
+}

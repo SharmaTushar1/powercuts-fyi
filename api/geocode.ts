@@ -1,0 +1,107 @@
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import type { GeocodeEnv } from './_lib/env';
+import { getGeocodeEnv } from './_lib/env';
+import {
+  buildMapTilerGeocodeUrl,
+  GeocodeResponseError,
+  parseGeocodeQuery,
+  shapeGeocodeResults,
+} from './_lib/geocode';
+import { ApiError, sendApiError, sendData, sendMethodNotAllowed } from './_lib/http';
+
+export interface GeocodeHandlerDependencies {
+  getEnv: () => GeocodeEnv;
+  fetch: typeof fetch;
+}
+
+const defaultDependencies: GeocodeHandlerDependencies = {
+  getEnv: getGeocodeEnv,
+  fetch,
+};
+
+export function createGeocodeHandler(
+  dependencies: GeocodeHandlerDependencies = defaultDependencies,
+) {
+  return async function geocodeHandler(
+    request: VercelRequest,
+    response: VercelResponse,
+  ): Promise<void> {
+    if (request.method !== 'GET') {
+      sendMethodNotAllowed(response, ['GET']);
+      return;
+    }
+
+    try {
+      const input = parseGeocodeQuery(request.query);
+      const environment = dependencies.getEnv();
+      const url = buildMapTilerGeocodeUrl(
+        input.query,
+        input.limit,
+        environment.MAPTILER_API_KEY,
+      );
+
+      let upstream: Response;
+      try {
+        upstream = await dependencies.fetch(url, {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+          },
+          signal: AbortSignal.timeout(5_000),
+        });
+      } catch (error) {
+        throw new ApiError(
+          502,
+          'SERVICE_UNAVAILABLE',
+          'Geocoding is temporarily unavailable',
+          { cause: error },
+        );
+      }
+
+      if (!upstream.ok) {
+        throw new ApiError(
+          502,
+          'SERVICE_UNAVAILABLE',
+          'Geocoding is temporarily unavailable',
+        );
+      }
+
+      let payload: unknown;
+      try {
+        payload = await upstream.json();
+      } catch (error) {
+        throw new ApiError(
+          502,
+          'SERVICE_UNAVAILABLE',
+          'Geocoding is temporarily unavailable',
+          { cause: error },
+        );
+      }
+
+      let results;
+      try {
+        results = shapeGeocodeResults(payload, input.limit);
+      } catch (error) {
+        if (error instanceof GeocodeResponseError) {
+          throw new ApiError(
+            502,
+            'SERVICE_UNAVAILABLE',
+            'Geocoding is temporarily unavailable',
+            { cause: error },
+          );
+        }
+        throw error;
+      }
+
+      response.setHeader(
+        'Cache-Control',
+        'public, s-maxage=300, stale-while-revalidate=600',
+      );
+      sendData(response, 200, { results });
+    } catch (error) {
+      sendApiError(response, error);
+    }
+  };
+}
+
+export default createGeocodeHandler();

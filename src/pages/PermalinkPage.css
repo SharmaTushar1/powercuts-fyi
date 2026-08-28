@@ -1,0 +1,132 @@
+.permalink-page {
+  padding-top: 24px;
+  padding-bottom: 72px;
+}
+
+.permalink-not-found {
+  padding-top: 64px;
+  padding-bottom: 96px;
+  max-width: 480px;
+}
+
+.permalink-not-found p {
+  color: var(--muted-1);
+  margin: 12px 0 20px;
+}
+
+.back-link {
+  display: inline-block;
+  font-size: 12px;
+  color: var(--muted-1);
+  margin-bottom: 20px;
+}
+
+.permalink-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 32px;
+}
+
+.permalink-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin: 14px 0 4px;
+}
+
+.permalink-meta {
+  font-size: 12px;
+  color: var(--muted-1);
+  margin-bottom: 24px;
+}
+
+.permalink-timer {
+  font-size: 52px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.permalink-timer-sub {
+  font-size: 13px;
+  color: var(--muted-1);
+  margin: 8px 0 28px;
+}
+
+.permalink-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.permalink-resolve-link {
+  border: none;
+  background: none;
+  font-size: 13px;
+  color: var(--accent-text);
+  text-decoration: underline;
+}
+
+.share-preview {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.share-preview-image {
+  height: 90px;
+  background: repeating-linear-gradient(45deg, var(--tile-stripe) 0 2px, #fff 2px 10px);
+}
+
+.share-preview-body {
+  padding: 12px 14px;
+}
+
+.share-preview-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.share-preview-sub {
+  font-size: 12px;
+  color: var(--muted-1);
+  margin-top: 3px;
+}
+
+.share-preview-url {
+  font-size: 11px;
+  color: oklch(0.60 0.01 50);
+  margin-top: 6px;
+}
+
+.nearby-label {
+  margin-top: 18px;
+  font-size: 11px;
+  color: var(--muted-1);
+}
+
+.nearby-row {
+  font-size: 13px;
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  color: var(--fg);
+}
+
+.nearby-distance {
+  color: var(--muted-1);
+}
+
+@media (max-width: 860px) {
+  .permalink-page {
+    padding-top: 18px;
+  }
+
+  .permalink-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .permalink-timer {
+    font-size: 40px;
+  }
+}
