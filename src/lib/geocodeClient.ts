@@ -35,10 +35,10 @@ export async function searchPlaces(
   const response = await fetcher(`/api/geocode?${params.toString()}`, {
     headers: { Accept: 'application/json' },
   });
-  const body: unknown = await response.json();
   if (!response.ok) {
     throw new Error('Location search is temporarily unavailable');
   }
+  const body: unknown = await response.json();
   const parsed = geocodeEnvelopeSchema.safeParse(body);
   if (!parsed.success) {
     throw new Error('Location search returned invalid data');

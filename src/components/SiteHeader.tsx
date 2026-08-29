@@ -1,7 +1,33 @@
-import { Link, NavLink } from 'react-router-dom';
+import type { MouseEvent } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './SiteHeader.css';
 
+const SECTION_NAV = [
+  { hash: 'feed', label: 'REPORTS', className: 'nav-link nav-link-strong' },
+  { hash: 'map', label: 'MAP', className: 'nav-link' },
+  { hash: 'browse', label: 'BROWSE', className: 'nav-link' },
+  { hash: 'how', label: 'HOW IT WORKS', className: 'nav-link' },
+] as const;
+
 export function SiteHeader() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleSectionNav = (
+    event: MouseEvent<HTMLAnchorElement>,
+    hash: string,
+  ): void => {
+    event.preventDefault();
+    if (location.pathname === '/') {
+      void navigate({ pathname: '/', search: location.search, hash });
+      requestAnimationFrame(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+      });
+      return;
+    }
+    void navigate({ pathname: '/', hash });
+  };
+
   return (
     <>
       <div className="utility-bar mono">
@@ -15,18 +41,16 @@ export function SiteHeader() {
             powercuts<span className="mono">.fyi</span>
           </Link>
           <div className="site-nav-links mono">
-            <NavLink to="/#feed" end={false} className="nav-link nav-link-strong">
-              REPORTS
-            </NavLink>
-            <NavLink to="/#map" className="nav-link">
-              MAP
-            </NavLink>
-            <NavLink to="/#browse" className="nav-link">
-              BROWSE
-            </NavLink>
-            <NavLink to="/#how" className="nav-link">
-              HOW IT WORKS
-            </NavLink>
+            {SECTION_NAV.map(({ hash, label, className }) => (
+              <a
+                key={hash}
+                href={`/#${hash}`}
+                className={className}
+                onClick={(event) => handleSectionNav(event, hash)}
+              >
+                {label}
+              </a>
+            ))}
           </div>
         </div>
         <div className="site-nav-right">

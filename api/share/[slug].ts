@@ -3,7 +3,7 @@ import type { ShareEnv } from '../_lib/env';
 import { getShareEnv } from '../_lib/env';
 import { parseIncidentMutationResult } from '../_lib/incidents';
 import { sendApiError } from '../_lib/http';
-import { renderCrawlerPage } from '../_lib/crawler-html';
+import { escapeHtml, renderCrawlerPage } from '../_lib/crawler-html';
 import {
   createServerSupabaseClient,
   type ServerSupabaseClient,
@@ -60,13 +60,16 @@ export function createShareHandler(
       const participants = mapped.incident.consensus.participantCount;
       const out = Math.round(mapped.incident.consensus.outPercentage);
       const back = Math.round(mapped.incident.consensus.backPercentage);
+      const title = `Power cut in ${area}, ${city} — powercuts.fyi`;
+      const description = `${participants} recent reports · ${out}% power out · ${back}% power back`;
       response.setHeader('Content-Type', CRAWLER_HTML_HEADERS['Content-Type']);
       response.setHeader('Cache-Control', CRAWLER_HTML_HEADERS['Cache-Control']);
       response.status(200).send(
-        renderSharePage({
-          title: `Power cut in ${area}, ${city} — powercuts.fyi`,
-          description: `${participants} recent reports · ${out}% power out · ${back}% power back`,
+        renderCrawlerPage({
+          title,
+          description,
           url,
+          bodyHtml: `<p>${escapeHtml(description)}</p><p><a href="${escapeHtml(url)}">Open report</a></p>`,
         }),
       );
     } catch (error) {

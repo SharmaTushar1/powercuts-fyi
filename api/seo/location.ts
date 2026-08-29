@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { getShareEnv } from '../_lib/env';
-import { sendApiError, sendMethodNotAllowed } from '../_lib/http';
+import { ApiError, sendApiError, sendMethodNotAllowed } from '../_lib/http';
 import { renderCrawlerPage, escapeHtml } from '../_lib/crawler-html';
 import {
   faqItems,
@@ -53,11 +53,33 @@ async function countActiveIncidents(
     p_limit: 1,
     p_offset: 0,
   });
-  if (error || !Array.isArray(data) || data.length === 0) {
+  if (error) {
+    throw new ApiError(
+      503,
+      'SERVICE_UNAVAILABLE',
+      'Unable to load incident counts',
+      { cause: error },
+    );
+  }
+  if (!Array.isArray(data)) {
+    throw new ApiError(
+      503,
+      'SERVICE_UNAVAILABLE',
+      'The incident count query returned invalid data',
+    );
+  }
+  if (data.length === 0) {
     return 0;
   }
   const total = (data[0] as { total_count?: number }).total_count;
-  return typeof total === 'number' ? total : 0;
+  if (typeof total !== 'number') {
+    throw new ApiError(
+      503,
+      'SERVICE_UNAVAILABLE',
+      'The incident count query returned invalid data',
+    );
+  }
+  return total;
 }
 
 export function createLocationSeoHandler(

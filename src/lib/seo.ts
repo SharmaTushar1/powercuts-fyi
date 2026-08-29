@@ -194,7 +194,7 @@ export function resolveSeoPlace(
       locality,
       displayName: `${locality}, ${city}`,
       path: powercutPath(city, locality),
-      indexable: Boolean(match) || cityMatches.length > 0,
+      indexable: Boolean(match),
     };
   }
 

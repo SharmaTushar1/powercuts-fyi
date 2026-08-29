@@ -86,14 +86,17 @@ export function ReportPage() {
     );
   }, []);
 
+  const nearbyLatitude = location?.latitude;
+  const nearbyLongitude = location?.longitude;
+
   useEffect(() => {
-    if (!location) {
+    if (nearbyLatitude === undefined || nearbyLongitude === undefined) {
       return;
     }
     let cancelled = false;
     void fetchNearbyIncidents({
-      latitude: location.latitude,
-      longitude: location.longitude,
+      latitude: nearbyLatitude,
+      longitude: nearbyLongitude,
       radiusKm: 0.4,
       limit: 1,
     })
@@ -110,7 +113,7 @@ export function ReportPage() {
     return () => {
       cancelled = true;
     };
-  }, [fetchNearbyIncidents, location]);
+  }, [fetchNearbyIncidents, nearbyLatitude, nearbyLongitude]);
 
   useEffect(() => {
     const trimmed = search.trim();
@@ -200,6 +203,11 @@ export function ReportPage() {
           <div className="report-success-sub mono">
             It&apos;s live in the {location.locality} feed now.
           </div>
+          {error && (
+            <div className="report-error" role="alert">
+              {error}
+            </div>
+          )}
           <div className="report-success-actions">
             <a
               className="share-circle mono"
@@ -222,10 +230,20 @@ export function ReportPage() {
               className="share-circle mono"
               aria-label="Copy report link"
               onClick={() => {
-                void navigator.clipboard?.writeText(shareUrl).then(() => {
-                  setCopied(true);
-                  window.setTimeout(() => setCopied(false), 1500);
-                });
+                void (async () => {
+                  if (!navigator.clipboard) {
+                    setError('Unable to copy the link from this browser.');
+                    return;
+                  }
+                  try {
+                    await navigator.clipboard.writeText(shareUrl);
+                    setError(null);
+                    setCopied(true);
+                    window.setTimeout(() => setCopied(false), 1500);
+                  } catch {
+                    setError('Unable to copy the link. Try sharing another way.');
+                  }
+                })();
               }}
             >
               {copied ? '✓' : '🔗'}

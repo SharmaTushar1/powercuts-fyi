@@ -11,11 +11,11 @@ import { NotFoundPage } from './pages/NotFoundPage';
 function App() {
   return (
     <div className="page">
-      <a className="skip-link" href="#feed">
+      <a className="skip-link" href="#main">
         Skip to reports
       </a>
       <SiteHeader />
-      <main id="main">
+      <main id="main" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/report" element={<ReportPage />} />

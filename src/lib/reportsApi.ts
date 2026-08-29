@@ -474,8 +474,13 @@ async function postMutation<TPayload>(
     );
   }
 
-  const body = await parseJsonResponse(response);
   if (!response.ok) {
+    let body: unknown;
+    try {
+      body = await response.json();
+    } catch {
+      body = undefined;
+    }
     const parsedError = apiErrorEnvelopeSchema.safeParse(body);
     if (parsedError.success) {
       throw new ReportsApiError(
@@ -497,6 +502,7 @@ async function postMutation<TPayload>(
     );
   }
 
+  const body = await parseJsonResponse(response);
   const parsedEnvelope = mutationEnvelopeSchema.safeParse(body);
   if (!parsedEnvelope.success) {
     throw invalidResponse(

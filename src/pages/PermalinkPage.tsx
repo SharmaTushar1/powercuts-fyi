@@ -31,32 +31,42 @@ export function PermalinkPage() {
     }
     let cancelled = false;
     void fetchIncidentBySlug(slug)
-      .then(async (result) => {
+      .then((result) => {
         if (cancelled) {
           return;
         }
         if (!result) {
           setIncident(null);
           setLoadedSlug(slug);
+          setNearby([]);
           return;
         }
         setIncident(result);
         setLoadedSlug(slug);
-        const nearbyResult = await fetchNearbyIncidents({
+        setNearby([]);
+        void fetchNearbyIncidents({
           latitude: result.location.latitude,
           longitude: result.location.longitude,
           radiusKm: 5,
           limit: 4,
           excludeIncidentId: result.id,
-        });
-        if (!cancelled) {
-          setNearby(nearbyResult);
-        }
+        })
+          .then((nearbyResult) => {
+            if (!cancelled) {
+              setNearby(nearbyResult);
+            }
+          })
+          .catch(() => {
+            if (!cancelled) {
+              setNearby([]);
+            }
+          });
       })
       .catch((caught: unknown) => {
         if (!cancelled) {
           setIncident(null);
           setLoadedSlug(slug);
+          setNearby([]);
           setError(
             caught instanceof Error ? caught.message : 'Unable to load this report.',
           );
@@ -152,6 +162,7 @@ export function PermalinkPage() {
               <button
                 type="button"
                 className="permalink-resolve-link mono"
+                disabled={Boolean(pending.observations[incident.id]) || !isTurnstileConfigured()}
                 onClick={() => setResolving(true)}
               >
                 Power&rsquo;s back
@@ -178,18 +189,36 @@ export function PermalinkPage() {
             className="btn btn-primary"
             style={{ marginTop: 16, width: '100%' }}
             onClick={() => {
-              const share = navigator.share;
-              if (share) {
-                void share({
-                  title: `Power cut in ${locationTitle(incident)}`,
-                  url: shareUrl,
-                });
-                return;
-              }
-              void navigator.clipboard?.writeText(shareUrl).then(() => {
-                setCopied(true);
-                window.setTimeout(() => setCopied(false), 1500);
-              });
+              void (async () => {
+                const copyLink = async () => {
+                  if (!navigator.clipboard) {
+                    return;
+                  }
+                  try {
+                    await navigator.clipboard.writeText(shareUrl);
+                    setCopied(true);
+                    window.setTimeout(() => setCopied(false), 1500);
+                  } catch {
+                    // Clipboard unavailable or denied.
+                  }
+                };
+
+                if (navigator.share) {
+                  try {
+                    await navigator.share({
+                      title: `Power cut in ${locationTitle(incident)}`,
+                      url: shareUrl,
+                    });
+                    return;
+                  } catch (caught) {
+                    if (caught instanceof Error && caught.name === 'AbortError') {
+                      return;
+                    }
+                  }
+                }
+
+                await copyLink();
+              })();
             }}
           >
             {copied ? 'Copied!' : 'Share'}
