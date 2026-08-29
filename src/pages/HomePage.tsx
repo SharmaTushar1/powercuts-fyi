@@ -1,0 +1,122 @@
+import { useEffect, useState } from 'react';
+import { useReports } from '../context/ReportsContext';
+import { Hero } from '../components/Hero';
+import { CtaBanner } from '../components/CtaBanner';
+import { ReportsSection } from '../components/ReportsSection';
+import { BrowseSection } from '../components/BrowseSection';
+import { HowItWorks } from '../components/HowItWorks';
+import { ResolveModal } from '../components/ResolveModal';
+import { isTurnstileConfigured, requestTurnstileToken } from '../lib/turnstile';
+import { toCompatibilityReport } from '../lib/reportsApi';
+import type { Incident, NearbyIncident } from '../types';
+
+export function HomePage() {
+  const {
+    incidents,
+    aggregateStats,
+    locationAggregates,
+    loading,
+    error,
+    pending,
+    submitObservation,
+    fetchNearbyIncidents,
+  } = useReports();
+  const [resolving, setResolving] = useState<Incident | null>(null);
+  const [nearby, setNearby] = useState<NearbyIncident[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [mapCenter, setMapCenter] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        void fetchNearbyIncidents({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          radiusKm: 8,
+          limit: 10,
+        })
+          .then(setNearby)
+          .catch(() => setNearby([]));
+        setMapCenter({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+      },
+      () => undefined,
+      { timeout: 8000, maximumAge: 300000 },
+    );
+  }, [fetchNearbyIncidents]);
+
+  const observe = async (incident: Incident, state: 'out' | 'back'): Promise<void> => {
+    setActionError(null);
+    if (!isTurnstileConfigured()) {
+      setActionError('Verification is not configured, so observations are paused.');
+      return;
+    }
+    try {
+      const token = await requestTurnstileToken('record-observation');
+      await submitObservation({
+        incidentId: incident.id,
+        state,
+        turnstileToken: token,
+      });
+    } catch (caught) {
+      setActionError(
+        caught instanceof Error ? caught.message : 'Unable to record that observation.',
+      );
+    }
+  };
+
+  if (loading) {
+    return <div className="page-loading mono">Loading reports…</div>;
+  }
+
+  return (
+    <>
+      {(error || actionError) && (
+        <div className="page-banner" role="alert">
+          {actionError ?? error?.message}
+        </div>
+      )}
+      <Hero
+        latest={incidents[0] ? toCompatibilityReport(incidents[0]) : undefined}
+        stats={aggregateStats}
+        mostAffected={locationAggregates.slice(0, 3)}
+      />
+      <CtaBanner />
+      <ReportsSection
+        incidents={incidents}
+        nearby={nearby}
+        pendingIds={pending.observations}
+        selectedId={selectedId}
+        mapCenter={mapCenter}
+        onSelectIncident={(incident) => setSelectedId(incident.id)}
+        onConfirm={(incident) => {
+          void observe(incident, 'out');
+        }}
+        onRequestResolve={setResolving}
+      />
+      <BrowseSection aggregates={locationAggregates} />
+      <HowItWorks />
+
+      {resolving && (
+        <ResolveModal
+          incident={resolving}
+          onCancel={() => setResolving(null)}
+          onConfirm={() => {
+            const target = resolving;
+            setResolving(null);
+            void observe(target, 'back');
+          }}
+        />
+      )}
+    </>
+  );
+}

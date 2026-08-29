@@ -1,0 +1,175 @@
+.reports-section {
+  padding: 0 40px 64px;
+}
+
+.reports-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.reports-heading {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.reports-tabs {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 12px;
+}
+
+.reports-tab {
+  padding: 9px 16px;
+  border: none;
+  background: transparent;
+  color: var(--muted-2);
+}
+
+.reports-tab.active {
+  background: var(--ink);
+  color: #fff;
+  font-weight: 600;
+}
+
+.reports-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.reports-filters select.pill {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: none;
+}
+
+.reports-filters select.pill:disabled {
+  opacity: 0.5;
+}
+
+.reports-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reports-empty {
+  color: var(--muted-1);
+  font-size: 13px;
+  padding: 24px 4px;
+}
+
+.duplicate-card {
+  border: 1px solid var(--accent);
+  background: var(--accent-wash-soft);
+  border-radius: 8px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+
+.duplicate-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.reports-footnote {
+  font-size: 12px;
+  color: var(--muted-1);
+  margin-top: 14px;
+  font-style: italic;
+}
+
+.map-placeholder {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  height: 340px;
+  overflow: hidden;
+  background: repeating-linear-gradient(45deg, var(--tile-stripe) 0 2px, var(--bg) 2px 14px);
+}
+
+.map-dot {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.map-dot-unexpected {
+  background: var(--accent);
+  box-shadow: 0 0 0 5px var(--accent-wash);
+}
+
+.map-dot-planned {
+  background: var(--muted-1);
+}
+
+.map-dot-resolved {
+  background: oklch(0.60 0.10 155);
+}
+
+.map-caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--muted-1);
+  pointer-events: none;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.map-legend {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  display: flex;
+  gap: 14px;
+  font-size: 11px;
+  background: oklch(0.995 0.004 60 / 0.92);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.legend-dot-unexpected {
+  background: var(--accent);
+}
+
+.legend-dot-planned {
+  background: var(--muted-1);
+}
+
+.incident-map-wrap .map-legend {
+  z-index: 2;
+}
+
+@media (max-width: 720px) {
+  .reports-section {
+    padding: 0 18px 48px;
+  }
+}

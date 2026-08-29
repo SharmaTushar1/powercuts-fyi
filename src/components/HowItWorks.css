@@ -1,0 +1,60 @@
+.how-section {
+  padding: 0 40px 80px;
+}
+
+.how-heading {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  max-width: 640px;
+}
+
+.how-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.how-step {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 22px 22px 24px;
+  background: var(--card-bg);
+}
+
+.how-step-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent-wash);
+  color: var(--accent-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.how-step-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.how-step-body {
+  font-size: 14px;
+  color: var(--muted-2);
+  line-height: 1.5;
+}
+
+@media (max-width: 860px) {
+  .how-section {
+    padding: 0 18px 56px;
+  }
+
+  .how-steps {
+    grid-template-columns: 1fr;
+  }
+}
