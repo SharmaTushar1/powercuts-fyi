@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createShareHandler } from './[slug]';
+import { createShareHandler } from '../../../api/share/[slug]';
 
 function createResponse() {
   const headers = new Map<string, string>();

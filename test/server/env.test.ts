@@ -4,7 +4,7 @@ import {
   parseMaintenanceEnv,
   parseMutationEnv,
   ServerEnvironmentError,
-} from './env';
+} from '../../server/env';
 
 const databaseEnvironment = {
   SUPABASE_URL: 'https://example.supabase.co',

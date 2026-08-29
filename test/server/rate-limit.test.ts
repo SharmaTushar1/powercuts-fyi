@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { checkRateLimit, mapRateLimitDecision } from './rate-limit';
+import { checkRateLimit, mapRateLimitDecision } from '../../server/rate-limit';
 
 describe('rate-limit decision mapping', () => {
   it('maps an allowed database decision', () => {

@@ -483,7 +483,7 @@ describe('protected incident writes', () => {
 
   it('decodes the actual Vercel mutation envelope, not a frontend-shaped fixture', async () => {
     const { parseIncidentMutationResult } = await import(
-      '../../api/_lib/incidents'
+      '../../server/incidents'
     );
     const envelope = parseIncidentMutationResult({
       id: incidentRow.id,

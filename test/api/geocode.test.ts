@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { describe, expect, it, vi } from 'vitest';
-import { createGeocodeHandler } from './geocode';
+import { createGeocodeHandler } from '../../api/geocode';
 
 const environment = {
   MAPTILER_API_KEY: 'maptiler-key',

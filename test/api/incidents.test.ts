@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { describe, expect, it, vi } from 'vitest';
-import type { ServerSupabaseClient } from './_lib/supabase';
-import { createIncidentsHandler } from './incidents';
+import type { ServerSupabaseClient } from '../../server/supabase';
+import { createIncidentsHandler } from '../../api/incidents';
 
 const environment = {
   SUPABASE_URL: 'https://example.supabase.co',

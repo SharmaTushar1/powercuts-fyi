@@ -1,13 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { GeocodeEnv } from './_lib/env';
-import { getGeocodeEnv } from './_lib/env';
+import type { GeocodeEnv } from '../server/env';
+import { getGeocodeEnv } from '../server/env';
 import {
   buildMapTilerGeocodeUrl,
   GeocodeResponseError,
   parseGeocodeQuery,
   shapeGeocodeResults,
-} from './_lib/geocode';
-import { ApiError, sendApiError, sendData, sendMethodNotAllowed } from './_lib/http';
+} from '../server/geocode';
+import { ApiError, sendApiError, sendData, sendMethodNotAllowed } from '../server/http';
 
 export interface GeocodeHandlerDependencies {
   getEnv: () => GeocodeEnv;

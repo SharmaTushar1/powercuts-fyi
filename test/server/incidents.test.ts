@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { mapIncidentDatabaseError, parseIncidentMutationResult } from './incidents';
+import { mapIncidentDatabaseError, parseIncidentMutationResult } from '../../server/incidents';
 
 const databaseResult = {
   id: '123e4567-e89b-42d3-a456-426614174000',

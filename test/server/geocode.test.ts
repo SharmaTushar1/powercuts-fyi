@@ -4,7 +4,7 @@ import {
   GeocodeResponseError,
   parseGeocodeQuery,
   shapeGeocodeResults,
-} from './geocode';
+} from '../../server/geocode';
 
 describe('geocoding validation and shaping', () => {
   it('validates a strict query and caps the requested result count', () => {

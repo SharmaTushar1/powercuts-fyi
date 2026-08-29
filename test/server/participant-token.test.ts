@@ -5,7 +5,7 @@ import {
   readParticipantCookie,
   serializeParticipantCookie,
   verifyParticipantToken,
-} from './participant-token';
+} from '../../server/participant-token';
 
 const secret = 'participant-token-secret-with-32-characters';
 const nowMs = Date.parse('2026-08-28T12:00:00.000Z');

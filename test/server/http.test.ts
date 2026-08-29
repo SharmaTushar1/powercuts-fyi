@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { describe, expect, it, vi } from 'vitest';
 import { z } from 'zod';
-import { ApiError, getRequestIp, sendApiError, sendData } from './http';
+import { ApiError, getRequestIp, sendApiError, sendData } from '../../server/http';
 
 function createResponse() {
   const response = {

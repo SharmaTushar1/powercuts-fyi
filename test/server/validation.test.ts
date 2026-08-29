@@ -3,7 +3,7 @@ import {
   incidentRequestSchema,
   normalizeLocationComponent,
   observationRequestSchema,
-} from './validation';
+} from '../../server/validation';
 
 const validIncidentPayload = {
   turnstileToken: 'turnstile-token',

@@ -1,13 +1,13 @@
 import { timingSafeEqual } from 'node:crypto';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { z } from 'zod';
-import type { MaintenanceEnv } from './_lib/env';
-import { getMaintenanceEnv } from './_lib/env';
-import { ApiError, sendApiError, sendData, sendMethodNotAllowed } from './_lib/http';
+import type { MaintenanceEnv } from '../server/env';
+import { getMaintenanceEnv } from '../server/env';
+import { ApiError, sendApiError, sendData, sendMethodNotAllowed } from '../server/http';
 import {
   createServerSupabaseClient,
   type ServerSupabaseClient,
-} from './_lib/supabase';
+} from '../server/supabase';
 
 const affectedRowsSchema = z.number().int().nonnegative();
 

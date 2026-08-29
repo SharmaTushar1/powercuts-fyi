@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { deriveParticipantHash, deriveRateLimitHash } from './crypto';
+import { deriveParticipantHash, deriveRateLimitHash } from '../../server/crypto';
 
 const secret = 'test-only-secret-with-at-least-32-characters';
 

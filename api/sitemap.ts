@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getShareEnv } from './_lib/env';
-import { sendApiError, sendMethodNotAllowed } from './_lib/http';
-import { createServerSupabaseClient } from './_lib/supabase';
+import { getShareEnv } from '../server/env';
+import { sendApiError, sendMethodNotAllowed } from '../server/http';
+import { createServerSupabaseClient } from '../server/supabase';
 import {
   powercutPath,
   statePath,
