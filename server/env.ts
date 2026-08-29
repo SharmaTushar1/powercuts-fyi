@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const databaseEnvSchema = z.object({
   SUPABASE_URL: z.url(),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(20),
+  SUPABASE_SECRET_KEY: z.string().min(20),
 });
 
 const hostnameSchema = z

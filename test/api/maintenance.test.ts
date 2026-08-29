@@ -5,7 +5,7 @@ import { createMaintenanceHandler } from '../../api/maintenance';
 
 const environment = {
   SUPABASE_URL: 'https://example.supabase.co',
-  SUPABASE_SERVICE_ROLE_KEY: 'service-role-key-for-tests',
+  SUPABASE_SECRET_KEY: 'secret-key-for-tests',
   CRON_SECRET: 'cron-secret-with-at-least-32-characters',
 };
 

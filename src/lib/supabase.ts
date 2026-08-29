@@ -12,7 +12,7 @@ export function createBrowserSupabaseClient(
 ): BrowserSupabaseClient {
   return createClient<Database>(
     environment.supabaseUrl,
-    environment.supabaseAnonKey,
+    environment.supabasePublishableKey,
     {
       auth: {
         autoRefreshToken: false,

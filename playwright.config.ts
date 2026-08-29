@@ -17,7 +17,7 @@ export default defineConfig({
     env: {
       ...process.env,
       VITE_SUPABASE_URL: 'https://example.supabase.co',
-      VITE_SUPABASE_ANON_KEY: 'public-anonymous-key-for-tests',
+      VITE_SUPABASE_PUBLISHABLE_KEY: 'public-publishable-key-for-tests',
     },
   },
   projects: [

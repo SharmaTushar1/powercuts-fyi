@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { KOFI_URL } from '../lib/site';
 import './InfoPage.css';
 
 export function SupportPage() {
@@ -7,14 +8,20 @@ export function SupportPage() {
       <div className="section-label">SUPPORT US</div>
       <h1>Chip in for hosting</h1>
       <p>
-        powercuts.fyi runs on a small server and a bit of stubbornness. There's no ad revenue and no
-        funding round — just hosting bills that scale a little every time a state has a bad week for
-        power.
+        powercuts.fyi runs on a small server and a bit of stubbornness. Hosting bills tick up when
+        whole states have a bad week for power — a small one-off contribution helps keep the site
+        running.
       </p>
-      <p>If it's been useful to you, a small one-off contribution helps keep it running and ad-free.</p>
-      <div className="support-note mono">
-        Donations are not wired up in this version. The site stays free and anonymous either way.
-      </div>
+      <p>If it has been useful to you, you can leave a tip on Ko-fi. The site stays free and anonymous.</p>
+      <a
+        className="btn btn-primary"
+        href={KOFI_URL}
+        target="_blank"
+        rel="noreferrer"
+        style={{ display: 'inline-block', marginBottom: 28 }}
+      >
+        Support on Ko-fi →
+      </a>
       <Link to="/" className="btn btn-secondary">
         ← back home
       </Link>

@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('./env', () => ({
   getBrowserEnv: () => ({
     supabaseUrl: 'https://example.supabase.co',
-    supabaseAnonKey: 'public-anonymous-key-for-tests',
+    supabasePublishableKey: 'public-publishable-key-for-tests',
     mapTilerKey: null,
     turnstileSiteKey: null,
     siteUrl: 'https://powercuts.fyi',

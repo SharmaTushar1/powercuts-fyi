@@ -66,7 +66,7 @@ describe('share metadata endpoint', () => {
     const handler = createShareHandler({
       getEnv: () => ({
         SUPABASE_URL: 'https://example.supabase.co',
-        SUPABASE_SERVICE_ROLE_KEY: 'service-role-key-for-tests-only',
+        SUPABASE_SECRET_KEY: 'secret-key-for-tests-only',
         SITE_URL: 'https://powercuts.fyi',
       }),
       createClient: () => ({ rpc }) as never,
