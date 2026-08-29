@@ -26,6 +26,12 @@ describe('geocoding validation and shaping', () => {
     expect(url.searchParams.get('key')).toBe('test-api-key');
   });
 
+  it('keeps the longitude,latitude comma literal for reverse-geocode queries', () => {
+    const url = buildMapTilerGeocodeUrl('77.5946,12.9716', 1, 'test-api-key');
+
+    expect(url.pathname).toBe('/geocoding/77.5946,12.9716.json');
+  });
+
   it('shapes MapTiler features into bounded locality results', () => {
     const payload = {
       features: [

@@ -50,6 +50,7 @@ export function createGeocodeHandler(
           signal: AbortSignal.timeout(5_000),
         });
       } catch (error) {
+        console.error('geocode: upstream fetch threw', error);
         throw new ApiError(
           502,
           'SERVICE_UNAVAILABLE',
@@ -59,6 +60,12 @@ export function createGeocodeHandler(
       }
 
       if (!upstream.ok) {
+        const bodyText = await upstream.text().catch(() => '<unreadable body>');
+        console.error(
+          'geocode: upstream returned non-ok status',
+          upstream.status,
+          bodyText.slice(0, 500),
+        );
         throw new ApiError(
           502,
           'SERVICE_UNAVAILABLE',
@@ -70,6 +77,7 @@ export function createGeocodeHandler(
       try {
         payload = await upstream.json();
       } catch (error) {
+        console.error('geocode: upstream response was not valid JSON', error);
         throw new ApiError(
           502,
           'SERVICE_UNAVAILABLE',
@@ -83,6 +91,10 @@ export function createGeocodeHandler(
         results = shapeGeocodeResults(payload, input.limit);
       } catch (error) {
         if (error instanceof GeocodeResponseError) {
+          console.error(
+            'geocode: upstream payload failed shape validation',
+            JSON.stringify(payload).slice(0, 500),
+          );
           throw new ApiError(
             502,
             'SERVICE_UNAVAILABLE',
