@@ -80,6 +80,8 @@ export function parseGeocodeQuery(
   };
 }
 
+const REVERSE_GEOCODE_QUERY_PATTERN = /^-?\d{1,3}(?:\.\d+)?,-?\d{1,3}(?:\.\d+)?$/u;
+
 export function buildMapTilerGeocodeUrl(
   query: string,
   limit: number,
@@ -91,8 +93,11 @@ export function buildMapTilerGeocodeUrl(
   const url = new URL(
     `https://api.maptiler.com/geocoding/${encodedQuery}.json`,
   );
+  // MapTiler rejects reverse-geocode requests with limit > 1 unless a single
+  // `types` value is also given; callers here only ever use the nearest match.
+  const isReverseGeocode = REVERSE_GEOCODE_QUERY_PATTERN.test(query);
   url.searchParams.set('key', apiKey);
-  url.searchParams.set('limit', String(limit));
+  url.searchParams.set('limit', String(isReverseGeocode ? 1 : limit));
   url.searchParams.set('country', 'in');
   url.searchParams.set('language', 'en');
   url.searchParams.set('autocomplete', 'false');
