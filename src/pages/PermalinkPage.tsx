@@ -35,6 +35,7 @@ export function PermalinkPage() {
         if (cancelled) {
           return;
         }
+        setError(null);
         if (!result) {
           setIncident(null);
           setLoadedSlug(slug);
