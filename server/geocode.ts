@@ -85,8 +85,11 @@ export function buildMapTilerGeocodeUrl(
   limit: number,
   apiKey: string,
 ): URL {
+  // MapTiler's reverse-geocoding path requires a literal "longitude,latitude"
+  // comma; a percent-encoded comma fails to match their coordinate route.
+  const encodedQuery = encodeURIComponent(query).replace(/%2C/gu, ',');
   const url = new URL(
-    `https://api.maptiler.com/geocoding/${encodeURIComponent(query)}.json`,
+    `https://api.maptiler.com/geocoding/${encodedQuery}.json`,
   );
   url.searchParams.set('key', apiKey);
   url.searchParams.set('limit', String(limit));
