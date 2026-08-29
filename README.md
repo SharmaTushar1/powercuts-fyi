@@ -65,5 +65,5 @@ npm run lint
 - One active incident per normalized state/city/locality/optional sector
 - Visitors record `out` / `back` observations; displayed status is the 60-minute latest-per-browser consensus
 - Cards show distinct recent reports plus out/back percentages
-- Incidents with no activity for 24 hours become inactive; permalinks remain
+- Incidents inactive for at least 24 hours are resolved during daily cleanup; permalinks remain
 - Accounts, payments, admin UI, and Hindi localization are out of scope
