@@ -16,7 +16,7 @@ test('home page renders the live feed chrome', async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByRole('link', { name: 'Skip to reports' })).toHaveAttribute(
     'href',
-    '#feed',
+    '#main',
   );
 });
 
