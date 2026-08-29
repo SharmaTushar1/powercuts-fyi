@@ -48,7 +48,11 @@ function assertNoUnapprovedPublicKeys(
   environment: Record<string, unknown>,
 ): void {
   const hasUnapprovedKey = Object.keys(environment).some((key) => {
-    if (VITE_BUILTIN_KEYS.has(key) || !key.startsWith('VITE_')) {
+    if (
+      VITE_BUILTIN_KEYS.has(key) ||
+      !key.startsWith('VITE_') ||
+      key.startsWith('VITE_VERCEL_')
+    ) {
       return false;
     }
     return !APPROVED_PUBLIC_KEYS.has(key);

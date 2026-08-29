@@ -15,6 +15,8 @@ describe('browser environment validation', () => {
         VITE_MAPTILER_KEY: 'maptiler-public-key',
         VITE_TURNSTILE_SITE_KEY: 'turnstile-public-site-key',
         VITE_SITE_URL: 'https://powercuts.fyi',
+        VITE_VERCEL_ENV: 'production',
+        VITE_VERCEL_URL: 'powercuts.fyi',
       }),
     ).toEqual({
       supabaseUrl: 'https://example.supabase.co',
@@ -22,6 +24,20 @@ describe('browser environment validation', () => {
       mapTilerKey: 'maptiler-public-key',
       turnstileSiteKey: 'turnstile-public-site-key',
       siteUrl: 'https://powercuts.fyi',
+    });
+  });
+
+  it('ignores Vercel-injected public system variables', () => {
+    expect(
+      parseBrowserEnv({
+        VITE_SUPABASE_URL: 'https://example.supabase.co',
+        VITE_SUPABASE_PUBLISHABLE_KEY: 'public-publishable-key-for-tests',
+        VITE_VERCEL_ENV: 'production',
+        VITE_VERCEL_GIT_COMMIT_SHA: 'abc123',
+      }),
+    ).toMatchObject({
+      supabaseUrl: 'https://example.supabase.co',
+      supabasePublishableKey: 'public-publishable-key-for-tests',
     });
   });
 
