@@ -1,5 +1,7 @@
 import { getBrowserEnv } from './env';
 
+export const KOFI_URL = 'https://ko-fi.com/sharmatushar1';
+
 export function getSiteOrigin(): string {
   try {
     const configured = getBrowserEnv().siteUrl;

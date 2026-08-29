@@ -8,7 +8,7 @@ import {
 
 const databaseEnvironment = {
   SUPABASE_URL: 'https://example.supabase.co',
-  SUPABASE_SERVICE_ROLE_KEY: 'service-role-key-for-tests',
+  SUPABASE_SECRET_KEY: 'secret-key-for-tests',
 };
 
 const mutationEnvironment = {
@@ -52,8 +52,8 @@ describe('server environment validation', () => {
     try {
       parseMutationEnv({
         ...mutationEnvironment,
-        SUPABASE_SERVICE_ROLE_KEY: undefined,
-        VITE_SUPABASE_SERVICE_ROLE_KEY: 'must-not-be-used',
+        SUPABASE_SECRET_KEY: undefined,
+        VITE_SUPABASE_SECRET_KEY: 'must-not-be-used',
       });
     } catch (caught) {
       error = caught;

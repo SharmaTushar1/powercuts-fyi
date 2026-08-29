@@ -5,7 +5,7 @@ import { createIncidentsHandler } from '../../api/incidents';
 
 const environment = {
   SUPABASE_URL: 'https://example.supabase.co',
-  SUPABASE_SERVICE_ROLE_KEY: 'service-role-key-for-tests',
+  SUPABASE_SECRET_KEY: 'secret-key-for-tests',
   TURNSTILE_SECRET_KEY: 'turnstile-secret',
   PARTICIPANT_HMAC_SECRET: 'hmac-secret-with-at-least-32-characters',
   PARTICIPANT_TOKEN_SECRET: 'token-secret-with-at-least-32-characters',

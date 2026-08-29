@@ -40,7 +40,7 @@ npm run test:db
 
 ## Environment
 
-Public `VITE_*` keys are the only values the browser may see. Service role, Turnstile secret, HMAC secrets, cron secret, and MapTiler server key stay server-side. Restrict the MapTiler key to your production domain.
+Public `VITE_*` keys are the only values the browser may see. Use the Supabase **publishable** key for `VITE_SUPABASE_PUBLISHABLE_KEY` and the **secret** key for `SUPABASE_SECRET_KEY`. Turnstile secret, HMAC secrets, cron secret, and MapTiler server key stay server-side. Restrict the MapTiler key to your production domain.
 
 Turnstile widget actions must be:
 

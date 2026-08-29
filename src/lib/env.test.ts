@@ -11,14 +11,14 @@ describe('browser environment validation', () => {
         SSR: false,
         BASE_URL: '/',
         VITE_SUPABASE_URL: 'https://example.supabase.co',
-        VITE_SUPABASE_ANON_KEY: 'public-anonymous-key-for-tests',
+        VITE_SUPABASE_PUBLISHABLE_KEY: 'public-publishable-key-for-tests',
         VITE_MAPTILER_KEY: 'maptiler-public-key',
         VITE_TURNSTILE_SITE_KEY: 'turnstile-public-site-key',
         VITE_SITE_URL: 'https://powercuts.fyi',
       }),
     ).toEqual({
       supabaseUrl: 'https://example.supabase.co',
-      supabaseAnonKey: 'public-anonymous-key-for-tests',
+      supabasePublishableKey: 'public-publishable-key-for-tests',
       mapTilerKey: 'maptiler-public-key',
       turnstileSiteKey: 'turnstile-public-site-key',
       siteUrl: 'https://powercuts.fyi',
@@ -29,8 +29,8 @@ describe('browser environment validation', () => {
     expect(() =>
       parseBrowserEnv({
         VITE_SUPABASE_URL: 'https://example.supabase.co',
-        VITE_SUPABASE_ANON_KEY: 'public-anonymous-key-for-tests',
-        VITE_SUPABASE_SERVICE_ROLE_KEY: 'service-role-key-must-not-be-used',
+        VITE_SUPABASE_PUBLISHABLE_KEY: 'public-publishable-key-for-tests',
+        VITE_SUPABASE_SECRET_KEY: 'secret-key-must-not-be-used',
       }),
     ).toThrow(BrowserEnvironmentError);
   });

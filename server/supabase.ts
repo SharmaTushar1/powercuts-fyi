@@ -9,7 +9,7 @@ export function createServerSupabaseClient(
 ): ServerSupabaseClient {
   return createClient<Database>(
     environment.SUPABASE_URL,
-    environment.SUPABASE_SERVICE_ROLE_KEY,
+    environment.SUPABASE_SECRET_KEY,
     {
       auth: {
         autoRefreshToken: false,

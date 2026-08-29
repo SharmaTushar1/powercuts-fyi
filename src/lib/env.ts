@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const APPROVED_PUBLIC_KEYS = new Set([
   'VITE_SUPABASE_URL',
-  'VITE_SUPABASE_ANON_KEY',
+  'VITE_SUPABASE_PUBLISHABLE_KEY',
   'VITE_MAPTILER_KEY',
   'VITE_TURNSTILE_SITE_KEY',
   'VITE_SITE_URL',
@@ -23,7 +23,7 @@ const httpUrlSchema = z.url().refine((value) => {
 
 const browserEnvironmentSchema = z.object({
   VITE_SUPABASE_URL: httpUrlSchema,
-  VITE_SUPABASE_ANON_KEY: z.string().min(20),
+  VITE_SUPABASE_PUBLISHABLE_KEY: z.string().min(20),
   VITE_MAPTILER_KEY: z.string().trim().min(1).optional(),
   VITE_TURNSTILE_SITE_KEY: z.string().trim().min(1).optional(),
   VITE_SITE_URL: httpUrlSchema.optional(),
@@ -31,7 +31,7 @@ const browserEnvironmentSchema = z.object({
 
 export interface BrowserEnvironment {
   supabaseUrl: string;
-  supabaseAnonKey: string;
+  supabasePublishableKey: string;
   mapTilerKey: string | null;
   turnstileSiteKey: string | null;
   siteUrl: string | null;
@@ -72,7 +72,7 @@ export function parseBrowserEnv(
 
   return {
     supabaseUrl: parsed.data.VITE_SUPABASE_URL,
-    supabaseAnonKey: parsed.data.VITE_SUPABASE_ANON_KEY,
+    supabasePublishableKey: parsed.data.VITE_SUPABASE_PUBLISHABLE_KEY,
     mapTilerKey: parsed.data.VITE_MAPTILER_KEY ?? null,
     turnstileSiteKey: parsed.data.VITE_TURNSTILE_SITE_KEY ?? null,
     siteUrl: parsed.data.VITE_SITE_URL ?? null,

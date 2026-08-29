@@ -1,5 +1,6 @@
 import type { MouseEvent } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { KOFI_URL } from '../lib/site';
 import './SiteHeader.css';
 
 const SECTION_NAV = [
@@ -32,7 +33,9 @@ export function SiteHeader() {
     <>
       <div className="utility-bar mono">
         <Link to="/vision">OUR VISION — why we built this →</Link>
-        <Link to="/support">SUPPORT US — chip in for hosting →</Link>
+        <a href={KOFI_URL} target="_blank" rel="noreferrer">
+          SUPPORT US — chip in on Ko-fi →
+        </a>
       </div>
 
       <nav className="site-nav" aria-label="Primary">
