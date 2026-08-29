@@ -394,9 +394,9 @@ values
     18.5,
     73.8,
     'unexpected',
-    current_timestamp - interval '8 hours',
-    current_timestamp - interval '7 hours',
-    current_timestamp - interval '7 hours'
+    current_timestamp - interval '26 hours',
+    current_timestamp - interval '25 hours',
+    current_timestamp - interval '25 hours'
   ),
   (
     '00000000-0000-4000-8000-000000000013',
@@ -422,7 +422,7 @@ end;
 $$;
 select extensions.ok(
   (select inactive_at is not null from public.incidents where id = '00000000-0000-4000-8000-000000000012'),
-  'incidents with no activity for six hours become inactive'
+  'incidents with no activity for twenty-four hours become inactive'
 );
 select extensions.ok(
   (select inactive_at is null from public.incidents where id = '00000000-0000-4000-8000-000000000013'),

@@ -307,7 +307,7 @@ export function ReportsSection({
       )}
 
       <div className="reports-footnote mono">
-        Reports with no activity for 6 hours are marked inactive. Status follows recent community
+        Reports with no activity for a few days are marked inactive. Status follows recent community
         consensus, not the last click.
       </div>
     </section>
