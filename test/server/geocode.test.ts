@@ -32,6 +32,18 @@ describe('geocoding validation and shaping', () => {
     expect(url.pathname).toBe('/geocoding/77.5946,12.9716.json');
   });
 
+  it('clamps limit to 1 for reverse-geocode queries, since MapTiler rejects limit > 1 without a types filter', () => {
+    const url = buildMapTilerGeocodeUrl('77.5946,12.9716', 5, 'test-api-key');
+
+    expect(url.searchParams.get('limit')).toBe('1');
+  });
+
+  it('leaves limit untouched for non-coordinate (forward) search queries', () => {
+    const url = buildMapTilerGeocodeUrl('Shivaji Nagar', 5, 'test-api-key');
+
+    expect(url.searchParams.get('limit')).toBe('5');
+  });
+
   it('shapes MapTiler features into bounded locality results', () => {
     const payload = {
       features: [
