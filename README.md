@@ -29,7 +29,7 @@ Vite proxies `/api` to `http://127.0.0.1:3000`.
 
 ## Database
 
-Apply migrations from `supabase/migrations/` to your Supabase project. Enable Realtime for `public.incidents`. Schedule `/api/maintenance` is already declared in `vercel.json` every 15 minutes; set `CRON_SECRET` to Vercel’s cron secret.
+Apply migrations from `supabase/migrations/` to your Supabase project. Enable Realtime for `public.incidents`. Schedule `/api/maintenance` is already declared in `vercel.json` once daily (02:00 UTC); set `CRON_SECRET` to Vercel’s cron secret.
 
 Optional database tests:
 
