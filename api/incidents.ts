@@ -1,25 +1,25 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { MutationEnv } from './_lib/env';
-import { getMutationEnv } from './_lib/env';
-import { getRequestIp, sendApiError, sendData, sendMethodNotAllowed } from './_lib/http';
+import type { MutationEnv } from '../server/env';
+import { getMutationEnv } from '../server/env';
+import { getRequestIp, sendApiError, sendData, sendMethodNotAllowed } from '../server/http';
 import {
   mapIncidentDatabaseError,
   parseIncidentMutationResult,
-} from './_lib/incidents';
-import { protectMutation } from './_lib/mutation-guard';
+} from '../server/incidents';
+import { protectMutation } from '../server/mutation-guard';
 import {
   issueParticipantToken,
   readParticipantCookie,
   serializeParticipantCookie,
   verifyParticipantToken,
-} from './_lib/participant-token';
-import { checkRateLimit } from './_lib/rate-limit';
+} from '../server/participant-token';
+import { checkRateLimit } from '../server/rate-limit';
 import {
   createServerSupabaseClient,
   type ServerSupabaseClient,
-} from './_lib/supabase';
-import { verifyTurnstile } from './_lib/turnstile';
-import { incidentRequestSchema } from './_lib/validation';
+} from '../server/supabase';
+import { verifyTurnstile } from '../server/turnstile';
+import { incidentRequestSchema } from '../server/validation';
 
 export interface IncidentsHandlerDependencies {
   getEnv: () => MutationEnv;

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { protectMutation } from './mutation-guard';
+import { protectMutation } from '../../server/mutation-guard';
 
 const baseInput = {
   turnstileToken: 'captcha-token',

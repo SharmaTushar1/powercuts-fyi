@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getShareEnv } from '../_lib/env';
-import { ApiError, sendApiError, sendMethodNotAllowed } from '../_lib/http';
-import { renderCrawlerPage, escapeHtml } from '../_lib/crawler-html';
+import { getShareEnv } from '../../server/env';
+import { ApiError, sendApiError, sendMethodNotAllowed } from '../../server/http';
+import { renderCrawlerPage, escapeHtml } from '../../server/crawler-html';
 import {
   faqItems,
   locationDescription,
@@ -13,7 +13,7 @@ import {
 import {
   createServerSupabaseClient,
   type ServerSupabaseClient,
-} from '../_lib/supabase';
+} from '../../server/supabase';
 
 const PLACE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+){0,12}$/u;
 const HTML_HEADERS = {

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { TurnstileUnavailableError, verifyTurnstile } from './turnstile';
+import { TurnstileUnavailableError, verifyTurnstile } from '../../server/turnstile';
 
 describe('Turnstile verification', () => {
   it('returns a failed verification from an injected verifier response', async () => {

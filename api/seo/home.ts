@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getShareEnv } from '../_lib/env';
-import { sendApiError, sendMethodNotAllowed } from '../_lib/http';
-import { renderCrawlerPage, escapeHtml } from '../_lib/crawler-html';
+import { getShareEnv } from '../../server/env';
+import { sendApiError, sendMethodNotAllowed } from '../../server/http';
+import { renderCrawlerPage, escapeHtml } from '../../server/crawler-html';
 import {
   INDEXABLE_PLACES,
   homeDescription,

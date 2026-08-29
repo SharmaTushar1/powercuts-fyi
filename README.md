@@ -29,7 +29,7 @@ Vite proxies `/api` to `http://127.0.0.1:3000`.
 
 ## Database
 
-Apply migrations from `supabase/migrations/` to your Supabase project. Enable Realtime for `public.incidents`. Schedule `/api/maintenance` is already declared in `vercel.json` every 15 minutes; set `CRON_SECRET` to Vercel’s cron secret.
+Apply migrations from `supabase/migrations/` to your Supabase project. Enable Realtime for `public.incidents`. Schedule `/api/maintenance` is already declared in `vercel.json` once daily (02:00 UTC); set `CRON_SECRET` to Vercel’s cron secret.
 
 Optional database tests:
 
@@ -65,5 +65,5 @@ npm run lint
 - One active incident per normalized state/city/locality/optional sector
 - Visitors record `out` / `back` observations; displayed status is the 60-minute latest-per-browser consensus
 - Cards show distinct recent reports plus out/back percentages
-- Incidents with no activity for 6 hours become inactive; permalinks remain
+- Incidents inactive for at least 24 hours are resolved during daily cleanup; permalinks remain
 - Accounts, payments, admin UI, and Hindi localization are out of scope
