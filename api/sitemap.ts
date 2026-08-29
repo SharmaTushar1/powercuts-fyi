@@ -1,13 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getShareEnv } from '../server/env';
-import { sendApiError, sendMethodNotAllowed } from '../server/http';
-import { createServerSupabaseClient } from '../server/supabase';
+import { getShareEnv } from '../server/env.js';
+import { sendApiError, sendMethodNotAllowed } from '../server/http.js';
+import { createServerSupabaseClient } from '../server/supabase.js';
 import {
   powercutPath,
   statePath,
   uniqueIndexablePaths,
   type SeoPlace,
-} from '../src/lib/seo.ts';
+} from '../src/lib/seo.js';
 
 function xmlEscape(value: string): string {
   return value.replace(/[&<>"']/gu, (character) => {
