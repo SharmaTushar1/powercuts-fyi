@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getShareEnv } from '../../server/env';
-import { ApiError, sendApiError, sendMethodNotAllowed } from '../../server/http';
-import { renderCrawlerPage, escapeHtml } from '../../server/crawler-html';
+import { getShareEnv } from '../../server/env.js';
+import { ApiError, sendApiError, sendMethodNotAllowed } from '../../server/http.js';
+import { renderCrawlerPage, escapeHtml } from '../../server/crawler-html.js';
 import {
   faqItems,
   locationDescription,
@@ -9,11 +9,11 @@ import {
   locationJsonLd,
   powercutHeading,
   resolveSeoPlace,
-} from '../../src/lib/seo.ts';
+} from '../../src/lib/seo.js';
 import {
   createServerSupabaseClient,
   type ServerSupabaseClient,
-} from '../../server/supabase';
+} from '../../server/supabase.js';
 
 const PLACE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+){0,12}$/u;
 const HTML_HEADERS = {

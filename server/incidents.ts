@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ApiError } from './http';
+import { ApiError } from './http.js';
 
 const incidentMutationResultSchema = z
   .object({

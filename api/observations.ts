@@ -1,25 +1,25 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { MutationEnv } from '../server/env';
-import { getMutationEnv } from '../server/env';
-import { getRequestIp, sendApiError, sendData, sendMethodNotAllowed } from '../server/http';
+import type { MutationEnv } from '../server/env.js';
+import { getMutationEnv } from '../server/env.js';
+import { getRequestIp, sendApiError, sendData, sendMethodNotAllowed } from '../server/http.js';
 import {
   mapIncidentDatabaseError,
   parseIncidentMutationResult,
-} from '../server/incidents';
-import { protectMutation } from '../server/mutation-guard';
+} from '../server/incidents.js';
+import { protectMutation } from '../server/mutation-guard.js';
 import {
   issueParticipantToken,
   readParticipantCookie,
   serializeParticipantCookie,
   verifyParticipantToken,
-} from '../server/participant-token';
-import { checkRateLimit } from '../server/rate-limit';
+} from '../server/participant-token.js';
+import { checkRateLimit } from '../server/rate-limit.js';
 import {
   createServerSupabaseClient,
   type ServerSupabaseClient,
-} from '../server/supabase';
-import { verifyTurnstile } from '../server/turnstile';
-import { observationRequestSchema } from '../server/validation';
+} from '../server/supabase.js';
+import { verifyTurnstile } from '../server/turnstile.js';
+import { observationRequestSchema } from '../server/validation.js';
 
 export interface ObservationsHandlerDependencies {
   getEnv: () => MutationEnv;

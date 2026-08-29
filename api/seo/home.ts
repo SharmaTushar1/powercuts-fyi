@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getShareEnv } from '../../server/env';
-import { sendApiError, sendMethodNotAllowed } from '../../server/http';
-import { renderCrawlerPage, escapeHtml } from '../../server/crawler-html';
+import { getShareEnv } from '../../server/env.js';
+import { sendApiError, sendMethodNotAllowed } from '../../server/http.js';
+import { renderCrawlerPage, escapeHtml } from '../../server/crawler-html.js';
 import {
   INDEXABLE_PLACES,
   homeDescription,
@@ -9,7 +9,7 @@ import {
   powercutHeading,
   powercutPath,
   websiteJsonLd,
-} from '../../src/lib/seo.ts';
+} from '../../src/lib/seo.js';
 
 const HTML_HEADERS = {
   'Content-Type': 'text/html; charset=utf-8',

@@ -1,13 +1,13 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import type { ShareEnv } from '../../server/env';
-import { getShareEnv } from '../../server/env';
-import { parseIncidentMutationResult } from '../../server/incidents';
-import { sendApiError } from '../../server/http';
-import { escapeHtml, renderCrawlerPage } from '../../server/crawler-html';
+import type { ShareEnv } from '../../server/env.js';
+import { getShareEnv } from '../../server/env.js';
+import { parseIncidentMutationResult } from '../../server/incidents.js';
+import { sendApiError } from '../../server/http.js';
+import { escapeHtml, renderCrawlerPage } from '../../server/crawler-html.js';
 import {
   createServerSupabaseClient,
   type ServerSupabaseClient,
-} from '../../server/supabase';
+} from '../../server/supabase.js';
 
 const SLUG_PATTERN = /^pc-[a-f0-9]{32}$/u;
 const CRAWLER_HTML_HEADERS = {

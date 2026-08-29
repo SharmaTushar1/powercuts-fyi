@@ -1,14 +1,14 @@
-import { deriveParticipantHash, deriveRateLimitHash } from './crypto';
-import { ApiError } from './http';
+import { deriveParticipantHash, deriveRateLimitHash } from './crypto.js';
+import { ApiError } from './http.js';
 import type {
   IssuedParticipantToken,
   ParticipantTokenClaims,
-} from './participant-token';
-import type { RateLimitDecision, RateLimitRule } from './rate-limit';
+} from './participant-token.js';
+import type { RateLimitDecision, RateLimitRule } from './rate-limit.js';
 import type {
   TurnstileVerificationInput,
   TurnstileVerificationResult,
-} from './turnstile';
+} from './turnstile.js';
 
 export interface MutationGuardInput {
   turnstileToken: string;
