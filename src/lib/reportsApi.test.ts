@@ -386,6 +386,41 @@ describe('public incident reads', () => {
     });
   });
 
+  it('accepts a nearby limit up to the raised ceiling instead of just the old display-list size', async () => {
+    const rpc = vi.fn().mockResolvedValue({
+      data: [{ ...incidentRow, distance_km: '1.234' }],
+      error: null,
+    });
+    const api = createReportsApi({
+      getClient: () => createClient(rpc),
+      fetch: vi.fn() as unknown as typeof fetch,
+    });
+
+    await expect(
+      api.getNearbyIncidents({
+        latitude: 12.9121,
+        longitude: 77.6446,
+        radiusKm: 2,
+        limit: 200,
+      }),
+    ).resolves.toEqual([{ incident, distanceKm: 1.23 }]);
+    expect(rpc).toHaveBeenCalledWith('get_nearby_public_incidents', {
+      p_latitude: 12.9121,
+      p_longitude: 77.6446,
+      p_radius_km: 2,
+      p_limit: 200,
+      p_exclude_incident_id: null,
+    });
+
+    await expect(
+      api.getNearbyIncidents({
+        latitude: 12.9121,
+        longitude: 77.6446,
+        limit: 201,
+      }),
+    ).rejects.toMatchObject({ code: 'VALIDATION_ERROR' });
+  });
+
   it('rejects invalid nearby radii and exclusion ids instead of clamping them', async () => {
     const rpc = vi.fn().mockResolvedValue({ data: [], error: null });
     const api = createReportsApi({

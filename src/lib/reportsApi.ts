@@ -40,7 +40,8 @@ const MAX_OFFSET = 10_000;
 const DEFAULT_NEARBY_RADIUS_KM = 25;
 const MAX_NEARBY_RADIUS_KM = 200;
 const DEFAULT_NEARBY_LIMIT = 10;
-const MAX_NEARBY_LIMIT = 20;
+// Mirrors the clamp in get_nearby_public_incidents (supabase/migrations).
+const MAX_NEARBY_LIMIT = 200;
 
 const databaseNumberSchema = z
   .union([z.number(), z.string().trim().min(1)])
