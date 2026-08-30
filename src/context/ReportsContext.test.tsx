@@ -67,7 +67,6 @@ const stats: AggregateStats = {
   incidentsLast10Minutes: 1,
   activeIncidents: 1,
   affectedStates: 1,
-  bengaluruActiveIncidents: 1,
   generatedAt: '2026-08-28T10:06:00.000Z',
 };
 

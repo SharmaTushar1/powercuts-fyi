@@ -79,8 +79,13 @@ export interface AggregateStats {
   incidentsLast10Minutes: number;
   activeIncidents: number;
   affectedStates: number;
-  bengaluruActiveIncidents: number;
   generatedAt: string;
+}
+
+export interface NearbyLocalityStats {
+  locality: string;
+  city: string;
+  activeIncidentCount: number;
 }
 
 export interface LocationAggregateQuery {

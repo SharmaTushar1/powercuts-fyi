@@ -326,7 +326,6 @@ describe('public incident reads', () => {
       incidentsLast10Minutes: 7,
       activeIncidents: 11,
       affectedStates: 3,
-      bengaluruActiveIncidents: 4,
       generatedAt: '2026-08-28T10:06:00.000Z',
     });
     await expect(
