@@ -672,7 +672,6 @@ export function createReportsApi(
         incidentsLast10Minutes: row.incidents_last_10_minutes,
         activeIncidents: row.active_incident_count,
         affectedStates: row.affected_state_count,
-        bengaluruActiveIncidents: row.bengaluru_active_count,
         generatedAt: row.generated_at,
       };
     },

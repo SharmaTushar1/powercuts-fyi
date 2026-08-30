@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import type { AggregateStats, LocationAggregate, Report } from '../types';
+import type { AggregateStats, LocationAggregate, NearbyLocalityStats, Report } from '../types';
 import { useElapsed } from '../hooks/useElapsed';
 import { StatusBadge } from './StatusBadge';
 import './Hero.css';
@@ -8,9 +8,10 @@ interface HeroProps {
   latest: Report | undefined;
   stats: AggregateStats | null;
   mostAffected: LocationAggregate[];
+  nearby: NearbyLocalityStats | null;
 }
 
-export function Hero({ latest, stats, mostAffected }: HeroProps) {
+export function Hero({ latest, stats, mostAffected, nearby }: HeroProps) {
   const elapsed = useElapsed(latest?.reportedAt ?? new Date(0).toISOString(), latest?.resolvedAt);
   const largestAffectedCount = Math.max(
     ...mostAffected.map((location) => location.incidentCount),
@@ -65,7 +66,8 @@ export function Hero({ latest, stats, mostAffected }: HeroProps) {
           <div className="section-label">CUTS RIGHT NOW</div>
           <div className="hero-panel-big mono">{stats?.activeIncidents ?? 0}</div>
           <div className="hero-panel-meta mono">
-            across India · {stats?.bengaluruActiveIncidents ?? 0} in Bengaluru right now
+            across India
+            {nearby ? ` · ${nearby.activeIncidentCount} in ${nearby.locality} right now` : ''}
           </div>
         </div>
         <div className="hero-panel-col hero-panel-col-wide">
