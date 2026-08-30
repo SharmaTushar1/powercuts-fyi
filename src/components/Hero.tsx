@@ -27,8 +27,17 @@ export function Hero({ latest, stats, mostAffected, nearby }: HeroProps) {
       </div>
 
       <div className="hero-headline">
-        <div className="hero-number mono">{stats?.incidentsLast10Minutes ?? 0}</div>
-        <h1>power cuts reported in the last 10 minutes, across India.</h1>
+        {nearby ? (
+          <>
+            <div className="hero-number mono">{nearby.activeIncidentCount}</div>
+            <h1>power cuts active near {nearby.locality} right now.</h1>
+          </>
+        ) : (
+          <>
+            <div className="hero-number mono">{stats?.incidentsLast10Minutes ?? 0}</div>
+            <h1>power cuts reported in the last 10 minutes, across India.</h1>
+          </>
+        )}
       </div>
 
       <p className="hero-sub">
