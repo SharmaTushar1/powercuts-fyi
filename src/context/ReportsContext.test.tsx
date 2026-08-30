@@ -409,6 +409,47 @@ describe('ReportsProvider', () => {
     expect(values.at(-1)?.error).toBeNull();
   });
 
+  it('fetches an on-demand, location-scoped incident list via fetchIncidents', async () => {
+    const initialResult: IncidentListResult = {
+      incidents: [],
+      total: 0,
+      limit: 50,
+      offset: 0,
+      hasMore: false,
+    };
+    const locationResult: IncidentListResult = {
+      incidents: [incident],
+      total: 1,
+      limit: 30,
+      offset: 0,
+      hasMore: false,
+    };
+    const listIncidents = vi
+      .fn()
+      .mockResolvedValueOnce(initialResult)
+      .mockResolvedValueOnce(locationResult);
+    const values: ReportsContextValue[] = [];
+
+    render(
+      <ReportsProvider api={createApi({ listIncidents })}>
+        <Probe onValue={(value) => values.push(value)} />
+      </ReportsProvider>,
+    );
+    await waitFor(() => expect(values.at(-1)?.loading).toBe(false));
+
+    await expect(
+      values.at(-1)?.fetchIncidents({ state: 'Karnataka', city: 'Bengaluru', limit: 30 }),
+    ).resolves.toEqual(locationResult);
+    expect(listIncidents).toHaveBeenLastCalledWith({
+      state: 'Karnataka',
+      city: 'Bengaluru',
+      limit: 30,
+    });
+    // Location-scoped fetches must not overwrite the global incidents list
+    // used elsewhere (the homepage feed, hero stats, etc).
+    expect(values.at(-1)?.incidents).toEqual(initialResult.incidents);
+  });
+
   it('does not clear a newer error when an older full refresh succeeds', async () => {
     const listRefresh = deferred<IncidentListResult>();
     const statsRefresh = deferred<AggregateStats>();
