@@ -12,7 +12,8 @@ import { searchPlaces } from '../lib/geocodeClient';
 import type { Incident, NearbyIncident, NearbyLocalityStats } from '../types';
 
 const NEARBY_LOCALITY_RADIUS_KM = 2;
-const NEARBY_LOCALITY_LIMIT = 50;
+// Capped by MAX_NEARBY_LIMIT in reportsApi.ts.
+const NEARBY_LOCALITY_LIMIT = 20;
 
 export function HomePage() {
   const {
