@@ -64,11 +64,13 @@ export function HomePage() {
         ])
           .then(([places, localIncidents]) => {
             const place = places[0];
-            if (!place?.locality || !place.city) {
+            if (!place?.city) {
               return;
             }
             setNearbyLocality({
-              locality: place.locality,
+              // Rural/highway points often have no locality-level feature,
+              // only a city; fall back rather than hiding the stat entirely.
+              locality: place.locality ?? place.city,
               city: place.city,
               activeIncidentCount: localIncidents.filter(
                 (entry) => entry.incident.status === 'ongoing',
