@@ -3,12 +3,22 @@ import {
   GeoJSONSource,
   Map as MapLibreMap,
   NavigationControl,
+  setWorkerUrl,
   type MapLayerMouseEvent,
 } from 'maplibre-gl';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?url';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { Incident } from '../types';
 import { getBrowserEnv } from '../lib/env';
 import { locationTitle } from '../lib/incidentCopy';
+
+// maplibre-gl resolves its worker relative to import.meta.url internally,
+// which Vite's static worker-bundling doesn't detect through that indirect
+// helper — the real file never gets copied into the build, and the SPA
+// catch-all rewrite serves index.html at that path instead (wrong MIME
+// type). Resolving the file through Vite's own asset pipeline and pointing
+// maplibre-gl at it explicitly sidesteps the whole problem.
+setWorkerUrl(maplibreWorkerUrl);
 
 interface IncidentMapProps {
   incidents: Incident[];
