@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { Incident } from '../types';
 import { useElapsed } from '../hooks/useElapsed';
 import { StatusBadge } from './StatusBadge';
@@ -15,6 +16,7 @@ export function ReportCard({
   onRequestResolve: (incident: Incident) => void;
   pending?: boolean;
 }) {
+  const { t } = useTranslation();
   const elapsed = useElapsed(
     incident.createdAt,
     incident.inactiveAt ?? undefined,
@@ -28,7 +30,8 @@ export function ReportCard({
         <div>
           <div className="report-card-title">{locationTitle(incident)}</div>
           <div className="report-card-meta mono">
-            {resolved ? 'Lasted' : 'Ongoing —'} {elapsed} · {consensusSummary(incident)}
+            {resolved ? t('card.lasted') : t('card.ongoing')} {elapsed} ·{' '}
+            {consensusSummary(incident, t)}
           </div>
           <div className="consensus-bar" aria-hidden="true">
             <span
@@ -46,7 +49,7 @@ export function ReportCard({
             disabled={pending}
             onClick={() => onConfirm(incident)}
           >
-            ▲ Still out?
+            {t('card.stillOut')}
           </button>
           <button
             type="button"
@@ -54,7 +57,7 @@ export function ReportCard({
             disabled={pending}
             onClick={() => onRequestResolve(incident)}
           >
-            Power&rsquo;s back
+            {t('card.powersBack')}
           </button>
         </div>
       )}

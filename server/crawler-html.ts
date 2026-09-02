@@ -24,11 +24,13 @@ export function renderCrawlerPage(options: {
   jsonLd?: unknown;
   bodyHtml: string;
   imageUrl?: string;
+  lang?: string;
 }): string {
   const title = escapeHtml(options.title);
   const description = escapeHtml(options.description);
   const url = escapeHtml(options.url);
   const canonical = escapeHtml(options.canonical ?? options.url);
+  const lang = escapeHtml(options.lang ?? 'en');
   const robots = options.index === false ? 'noindex, follow' : 'index, follow';
   const image = escapeHtml(
     options.imageUrl ?? `${new URL(options.url).origin}/apple-touch-icon.png`,
@@ -37,7 +39,7 @@ export function renderCrawlerPage(options: {
     ? `<script type="application/ld+json">${JSON.stringify(options.jsonLd).replace(/</gu, '\\u003c')}</script>`
     : '';
   return `<!doctype html>
-<html lang="en">
+<html lang="${lang}">
   <head>
     <meta charset="utf-8" />
     <title>${title}</title>

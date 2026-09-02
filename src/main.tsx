@@ -1,6 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
+import './i18n/index.ts';
 import './index.css';
 import App from './App.tsx';
 import { ReportsProvider } from './context/ReportsContext.tsx';
@@ -20,5 +22,6 @@ createRoot(root).render(
         </ReportsProvider>
       </BrowserRouter>
     </ErrorBoundary>
+    <Analytics />
   </StrictMode>,
 );

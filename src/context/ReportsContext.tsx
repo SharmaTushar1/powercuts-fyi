@@ -13,6 +13,8 @@ import type {
   CreateOrJoinIncidentPayload,
   CreateOrJoinIncidentResult,
   Incident,
+  IncidentListQuery,
+  IncidentListResult,
   LocationAggregate,
   LocationAggregateQuery,
   LocationAggregateResult,
@@ -60,6 +62,7 @@ export interface ReportsContextValue {
   fetchNearbyIncidents: (
     query: NearbyIncidentQuery,
   ) => Promise<NearbyIncident[]>;
+  fetchIncidents: (query?: IncidentListQuery) => Promise<IncidentListResult>;
   /**
    * Transitional Task 2 aliases retained for the pre-Task 3 components.
    */
@@ -500,6 +503,21 @@ export function ReportsProvider({
     [api, clearErrorIfCurrent, surfaceError],
   );
 
+  const fetchIncidents = useCallback(
+    async (query: IncidentListQuery = {}): Promise<IncidentListResult> => {
+      const errorGeneration = errorGenerationRef.current;
+      try {
+        const result = await api.listIncidents(query);
+        clearErrorIfCurrent(errorGeneration);
+        return result;
+      } catch (caught) {
+        surfaceError(caught);
+        throw caught;
+      }
+    },
+    [api, clearErrorIfCurrent, surfaceError],
+  );
+
   const confirm = useCallback(
     async (id: string, turnstileToken?: string): Promise<void> => {
       if (!turnstileToken) {
@@ -593,6 +611,7 @@ export function ReportsProvider({
       fetchAggregateStats,
       fetchLocationAggregates,
       fetchNearbyIncidents,
+      fetchIncidents,
       confirm,
       resolve,
       report,
@@ -613,6 +632,7 @@ export function ReportsProvider({
       fetchAggregateStats,
       fetchLocationAggregates,
       fetchNearbyIncidents,
+      fetchIncidents,
       confirm,
       resolve,
       report,

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import i18next from '../i18n';
 import { consensusSummary, locationTitle } from './incidentCopy';
 import type { Incident } from '../types';
 
@@ -39,7 +40,7 @@ describe('incident copy', () => {
   });
 
   it('summarizes distinct recent reports as out/back percentages', () => {
-    expect(consensusSummary(incident)).toBe(
+    expect(consensusSummary(incident, i18next.t)).toBe(
       '23 recent reports · 74% power out · 26% power back',
     );
   });

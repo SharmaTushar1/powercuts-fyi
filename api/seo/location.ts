@@ -4,11 +4,15 @@ import { ApiError, sendApiError, sendMethodNotAllowed } from '../../server/http.
 import { renderCrawlerPage, escapeHtml } from '../../server/crawler-html.js';
 import {
   faqItems,
+  localizedSeoPath,
   locationDescription,
   locationDocumentTitle,
   locationJsonLd,
+  locationKeywordLine,
+  locationLinkLabel,
   powercutHeading,
   resolveSeoPlace,
+  type SeoLanguage,
 } from '../../src/lib/seo.js';
 import {
   createServerSupabaseClient,
@@ -35,6 +39,12 @@ function queryValue(value: string | string[] | undefined): string | undefined {
   const raw = Array.isArray(value) ? value[0] : value;
   return raw?.trim() ? raw.trim() : undefined;
 }
+
+function languageValue(value: string | string[] | undefined): SeoLanguage {
+  return queryValue(value) === 'hi' ? 'hi' : 'en';
+}
+
+const HTML_LANG: Record<SeoLanguage, string> = { en: 'en-IN', hi: 'hi-IN' };
 
 async function countActiveIncidents(
   client: ServerSupabaseClient,
@@ -96,6 +106,7 @@ export function createLocationSeoHandler(
 
     const citySlug = queryValue(request.query.city);
     const localitySlug = queryValue(request.query.locality);
+    const language = languageValue(request.query.lang);
     if (!citySlug || !PLACE_SLUG.test(citySlug) || (localitySlug && !PLACE_SLUG.test(localitySlug))) {
       response.status(404).send('Not found');
       return;
@@ -105,6 +116,10 @@ export function createLocationSeoHandler(
       const environment = dependencies.getEnv();
       const origin = (environment.SITE_URL ?? 'https://powercuts.fyi').replace(/\/$/u, '');
       const resolved = resolveSeoPlace(citySlug, localitySlug);
+      const localizedPlace = {
+        ...resolved,
+        path: localizedSeoPath(resolved.path, language),
+      };
       const client = dependencies.createClient(environment);
       const activeCount = await countActiveIncidents(
         client,
@@ -112,31 +127,32 @@ export function createLocationSeoHandler(
         resolved.locality,
         resolved.state,
       );
-      const heading = powercutHeading(resolved.displayName);
-      const description = locationDescription(resolved.displayName, activeCount);
-      const faqs = faqItems(resolved.displayName)
+      const heading = powercutHeading(resolved.displayName, language);
+      const description = locationDescription(resolved.displayName, activeCount, language);
+      const faqs = faqItems(resolved.displayName, language)
         .map(
           (item) =>
             `<h2>${escapeHtml(item.question)}</h2><p>${escapeHtml(item.answer)}</p>`,
         )
         .join('');
-      const url = `${origin}${resolved.path}`;
+      const url = `${origin}${localizedPlace.path}`;
       response.setHeader('Content-Type', HTML_HEADERS['Content-Type']);
       response.setHeader('Cache-Control', HTML_HEADERS['Cache-Control']);
       response.status(200).send(
         renderCrawlerPage({
-          title: locationDocumentTitle(resolved.displayName),
+          title: locationDocumentTitle(resolved.displayName, language),
           description,
           url,
-          canonical: `${origin}${resolved.path}`,
+          canonical: url,
+          lang: HTML_LANG[language],
           index: resolved.indexable || activeCount > 0,
-          jsonLd: locationJsonLd(origin, resolved, activeCount),
+          jsonLd: locationJsonLd(origin, localizedPlace, activeCount, language),
           bodyHtml: `
     <h1>${escapeHtml(heading)}</h1>
     <p>${escapeHtml(description)}</p>
-    <p><a href="${escapeHtml(url)}">Open live reports for ${escapeHtml(resolved.displayName)}</a></p>
+    <p><a href="${escapeHtml(url)}">${escapeHtml(locationLinkLabel(resolved.displayName, language))}</a></p>
     ${faqs}
-    <p>Also searched as power outage, electricity cut, load shedding, and no power in ${escapeHtml(resolved.displayName)}.</p>
+    <p>${escapeHtml(locationKeywordLine(resolved.displayName, language))}</p>
 `,
         }),
       );

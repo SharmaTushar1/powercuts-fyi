@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest';
 import {
   displayNameFromSlug,
   homeDocumentTitle,
+  localizedSeoPath,
   locationDocumentTitle,
+  locationJsonLd,
+  locationKeywordLine,
+  locationLinkLabel,
   powercutHeading,
   powercutPath,
   resolveSeoPlace,
@@ -47,5 +51,39 @@ describe('seo place URLs', () => {
     expect(paths).toContain('/powercut/mumbai');
     expect(paths).toContain('/powercut/delhi');
     expect(paths).not.toContain('/powercut/bangalore');
+  });
+
+  it('prefixes Hindi SEO paths with /hi and leaves English bare', () => {
+    expect(localizedSeoPath('/powercut/bengaluru', 'hi')).toBe('/hi/powercut/bengaluru');
+    expect(localizedSeoPath('/', 'hi')).toBe('/hi');
+    expect(localizedSeoPath('/powercut/bengaluru', 'en')).toBe('/powercut/bengaluru');
+    expect(localizedSeoPath('/')).toBe('/');
+  });
+
+  it('builds Hindi JSON-LD from the locale-prefixed page URL', () => {
+    const resolved = resolveSeoPlace('bengaluru');
+    const hindiPlace = {
+      ...resolved,
+      path: localizedSeoPath(resolved.path, 'hi'),
+    };
+    const graph = locationJsonLd('https://powercuts.fyi', hindiPlace, 2, 'hi')[
+      '@graph'
+    ] as Record<string, unknown>[];
+    const webPage = graph.find((node) => node['@type'] === 'WebPage');
+    expect(webPage?.url).toBe('https://powercuts.fyi/hi/powercut/bengaluru');
+    expect(graph[0]?.inLanguage).toBe('hi-IN');
+  });
+
+  it('localizes the crawler body link and keyword copy', () => {
+    expect(locationLinkLabel('Bengaluru')).toBe('Open live reports for Bengaluru');
+    expect(locationKeywordLine('Bengaluru')).toContain('Also searched as');
+
+    const hindiLink = locationLinkLabel('Bengaluru', 'hi');
+    const hindiKeywords = locationKeywordLine('Bengaluru', 'hi');
+    expect(hindiLink).toContain('Bengaluru');
+    expect(hindiLink).not.toContain('Open live reports');
+    expect(hindiKeywords).not.toContain('Also searched as');
+    expect(/[\u0900-\u097F]/u.test(hindiLink)).toBe(true);
+    expect(/[\u0900-\u097F]/u.test(hindiKeywords)).toBe(true);
   });
 });

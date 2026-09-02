@@ -1,12 +1,16 @@
+import { useTranslation } from 'react-i18next';
+
 export function CtaBanner() {
+  const { t } = useTranslation();
+
   return (
     <section className="cta-banner">
       <div>
-        <div className="cta-banner-title">Reports that get confirmed get noticed faster.</div>
-        <div className="cta-banner-sub">A tap turns "is it just me?" into a number everyone can see.</div>
+        <div className="cta-banner-title">{t('cta.title')}</div>
+        <div className="cta-banner-sub">{t('cta.sub')}</div>
       </div>
       <a href="#how" className="cta-banner-link mono">
-        HOW IT WORKS →
+        {t('cta.cta')}
       </a>
     </section>
   );

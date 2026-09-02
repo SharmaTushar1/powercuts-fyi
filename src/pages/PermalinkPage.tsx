@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useReports } from '../context/ReportsContext';
 import { useElapsed } from '../hooks/useElapsed';
 import { StatusBadge } from '../components/StatusBadge';
@@ -7,10 +8,14 @@ import { ResolveModal } from '../components/ResolveModal';
 import { consensusSummary, locationTitle } from '../lib/incidentCopy';
 import { incidentPermalink } from '../lib/site';
 import { isTurnstileConfigured, requestTurnstileToken } from '../lib/turnstile';
+import { localizedPath } from '../i18n/paths';
 import type { Incident, NearbyIncident } from '../types';
 import './PermalinkPage.css';
 
 export function PermalinkPage() {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language === 'hi' ? 'hi' : 'en';
+  const home = localizedPath('/', language);
   const { slug } = useParams<{ slug: string }>();
   const { fetchIncidentBySlug, fetchNearbyIncidents, submitObservation, pending } =
     useReports();
@@ -68,15 +73,13 @@ export function PermalinkPage() {
           setIncident(null);
           setLoadedSlug(slug);
           setNearby([]);
-          setError(
-            caught instanceof Error ? caught.message : 'Unable to load this report.',
-          );
+          setError(caught instanceof Error ? caught.message : t('permalink.unableToLoad'));
         }
       });
     return () => {
       cancelled = true;
     };
-  }, [fetchIncidentBySlug, fetchNearbyIncidents, slug]);
+  }, [fetchIncidentBySlug, fetchNearbyIncidents, slug, t]);
 
   const observe = async (state: 'out' | 'back'): Promise<void> => {
     if (!incident) {
@@ -92,9 +95,7 @@ export function PermalinkPage() {
       });
       setIncident(result.incident);
     } catch (caught) {
-      setError(
-        caught instanceof Error ? caught.message : 'Unable to record that observation.',
-      );
+      setError(caught instanceof Error ? caught.message : t('permalink.unableToRecord'));
     }
   };
 
@@ -108,13 +109,10 @@ export function PermalinkPage() {
   if (missing || !incident) {
     return (
       <div className="permalink-not-found container-pad">
-        <div className="section-label">REPORT NOT FOUND</div>
-        <p>
-          {error ??
-            "This report doesn't exist, or it's older than our public archive."}
-        </p>
-        <Link to="/" className="btn btn-secondary">
-          ← back to feed
+        <div className="section-label">{t('permalink.notFoundLabel')}</div>
+        <p>{error ?? t('permalink.notFoundBody')}</p>
+        <Link to={home} className="btn btn-secondary">
+          {t('permalink.backToFeed')}
         </Link>
       </div>
     );
@@ -129,8 +127,8 @@ export function PermalinkPage() {
 
   return (
     <div className="permalink-page container-pad">
-      <Link to="/" className="back-link mono">
-        ← back to feed
+      <Link to={home} className="back-link mono">
+        {t('permalink.backToFeed')}
       </Link>
 
       <div className="permalink-grid">
@@ -138,10 +136,10 @@ export function PermalinkPage() {
           <StatusBadge type={incident.outageType} status={incident.status} />
           <h1 className="permalink-title">{locationTitle(incident)}</h1>
           <div className="permalink-meta mono">
-            Reported {reportedAtLabel} · {incident.location.state}
+            {t('permalink.reportedAt', { time: reportedAtLabel, state: incident.location.state })}
           </div>
           <div className="permalink-timer mono">{elapsed}</div>
-          <div className="permalink-timer-sub">{consensusSummary(incident)}</div>
+          <div className="permalink-timer-sub">{consensusSummary(incident, t)}</div>
           {error && (
             <div className="report-error" role="alert">
               {error}
@@ -158,7 +156,7 @@ export function PermalinkPage() {
                   void observe('out');
                 }}
               >
-                ▲ Still out? Confirm
+                {t('permalink.stillOutConfirm')}
               </button>
               <button
                 type="button"
@@ -166,21 +164,21 @@ export function PermalinkPage() {
                 disabled={Boolean(pending.observations[incident.id]) || !isTurnstileConfigured()}
                 onClick={() => setResolving(true)}
               >
-                Power&rsquo;s back
+                {t('permalink.powersBack')}
               </button>
             </div>
           )}
         </div>
 
         <div>
-          <div className="section-label">HOW THIS LOOKS SHARED</div>
+          <div className="section-label">{t('permalink.howShared')}</div>
           <div className="share-preview">
             <div className="share-preview-image" />
             <div className="share-preview-body">
               <div className="share-preview-title">
                 powercuts.fyi — {locationTitle(incident)}
               </div>
-              <div className="share-preview-sub">{consensusSummary(incident)}</div>
+              <div className="share-preview-sub">{consensusSummary(incident, t)}</div>
               <div className="share-preview-url mono">{new URL(shareUrl).host}</div>
             </div>
           </div>
@@ -207,7 +205,7 @@ export function PermalinkPage() {
                 if (navigator.share) {
                   try {
                     await navigator.share({
-                      title: `Power cut in ${locationTitle(incident)}`,
+                      title: t('permalink.shareTitle', { place: locationTitle(incident) }),
                       url: shareUrl,
                     });
                     return;
@@ -222,12 +220,12 @@ export function PermalinkPage() {
               })();
             }}
           >
-            {copied ? 'Copied!' : 'Share'}
+            {copied ? t('permalink.copied') : t('permalink.share')}
           </button>
 
           {nearby.length > 0 && (
             <>
-              <div className="nearby-label mono">NEARBY REPORTS</div>
+              <div className="nearby-label mono">{t('permalink.nearbyReports')}</div>
               {nearby.map((item) => (
                 <Link to={`/r/${item.incident.slug}`} className="nearby-row" key={item.incident.id}>
                   <span>{locationTitle(item.incident)}</span>

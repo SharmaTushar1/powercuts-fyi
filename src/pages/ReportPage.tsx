@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useReports } from '../context/ReportsContext';
 import { searchPlaces, type PlaceSuggestion } from '../lib/geocodeClient';
 import { incidentPermalink } from '../lib/site';
@@ -19,6 +20,7 @@ interface DetectedLocation {
 }
 
 export function ReportPage() {
+  const { t } = useTranslation();
   const { createOrJoinIncident, fetchNearbyIncidents } = useReports();
   const [location, setLocation] = useState<DetectedLocation | null>(null);
   const [locationStatus, setLocationStatus] = useState<
@@ -54,9 +56,9 @@ export function ReportPage() {
             );
             const match = results[0];
             setLocation({
-              locality: match?.locality ?? 'Current location',
-              city: match?.city ?? 'Unknown city',
-              state: match?.state ?? 'Unknown state',
+              locality: match?.locality ?? t('report.currentLocation'),
+              city: match?.city ?? t('report.unknownCity'),
+              state: match?.state ?? t('report.unknownState'),
               sector: '',
               pincode: match?.pincode ?? '',
               latitude: position.coords.latitude,
@@ -66,9 +68,9 @@ export function ReportPage() {
             setLocationStatus('ready');
           } catch {
             setLocation({
-              locality: 'Current location',
-              city: 'Unknown city',
-              state: 'Unknown state',
+              locality: t('report.currentLocation'),
+              city: t('report.unknownCity'),
+              state: t('report.unknownState'),
               sector: '',
               pincode: '',
               latitude: position.coords.latitude,
@@ -84,7 +86,7 @@ export function ReportPage() {
       },
       { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 },
     );
-  }, []);
+  }, [t]);
 
   const nearbyLatitude = location?.latitude;
   const nearbyLongitude = location?.longitude;
@@ -145,8 +147,8 @@ export function ReportPage() {
   const applySuggestion = (place: PlaceSuggestion): void => {
     setLocation({
       locality: place.locality ?? place.label,
-      city: place.city ?? 'Unknown city',
-      state: place.state ?? 'Unknown state',
+      city: place.city ?? t('report.unknownCity'),
+      state: place.state ?? t('report.unknownState'),
       sector: '',
       pincode: place.pincode ?? '',
       latitude: place.latitude,
@@ -180,11 +182,7 @@ export function ReportPage() {
       });
       setPosted({ slug: result.incident.slug, joined: !result.wasCreated });
     } catch (caught) {
-      setError(
-        caught instanceof Error
-          ? caught.message
-          : 'Unable to post this report right now.',
-      );
+      setError(caught instanceof Error ? caught.message : t('report.unableToPost'));
     } finally {
       setSubmitting(false);
     }
@@ -198,10 +196,10 @@ export function ReportPage() {
         <div className="report-frame report-success">
           <div className="report-success-check">✓</div>
           <div className="report-success-title">
-            {posted.joined ? 'Added to the local report.' : 'Reported. Thanks for the heads up.'}
+            {posted.joined ? t('report.joinedTitle') : t('report.postedTitle')}
           </div>
           <div className="report-success-sub mono">
-            It&apos;s live in the {location.locality} feed now.
+            {t('report.liveInFeed', { locality: location.locality })}
           </div>
           {error && (
             <div className="report-error" role="alert">
@@ -211,7 +209,13 @@ export function ReportPage() {
           <div className="report-success-actions">
             <a
               className="share-circle mono"
-              href={`https://wa.me/?text=${encodeURIComponent(`Power cut reported in ${location.locality}, ${location.city} — ${shareUrl}`)}`}
+              href={`https://wa.me/?text=${encodeURIComponent(
+                t('report.shareWhatsAppText', {
+                  locality: location.locality,
+                  city: location.city,
+                  url: shareUrl,
+                }),
+              )}`}
               target="_blank"
               rel="noreferrer"
             >
@@ -219,7 +223,9 @@ export function ReportPage() {
             </a>
             <a
               className="share-circle mono"
-              href={`https://x.com/intent/tweet?text=${encodeURIComponent(`Power cut in ${location.locality}, ${location.city}`)}&url=${encodeURIComponent(shareUrl)}`}
+              href={`https://x.com/intent/tweet?text=${encodeURIComponent(
+                t('report.shareTweetText', { locality: location.locality, city: location.city }),
+              )}&url=${encodeURIComponent(shareUrl)}`}
               target="_blank"
               rel="noreferrer"
             >
@@ -228,11 +234,11 @@ export function ReportPage() {
             <button
               type="button"
               className="share-circle mono"
-              aria-label="Copy report link"
+              aria-label={t('report.copyLinkLabel')}
               onClick={() => {
                 void (async () => {
                   if (!navigator.clipboard) {
-                    setError('Unable to copy the link from this browser.');
+                    setError(t('report.unableToCopy'));
                     return;
                   }
                   try {
@@ -241,7 +247,7 @@ export function ReportPage() {
                     setCopied(true);
                     window.setTimeout(() => setCopied(false), 1500);
                   } catch {
-                    setError('Unable to copy the link. Try sharing another way.');
+                    setError(t('report.unableToCopyRetry'));
                   }
                 })();
               }}
@@ -250,7 +256,7 @@ export function ReportPage() {
             </button>
           </div>
           <Link to={`/r/${posted.slug}`} className="btn btn-primary" style={{ marginTop: 24 }}>
-            View report →
+            {t('report.viewReport')}
           </Link>
         </div>
       </div>
@@ -260,11 +266,11 @@ export function ReportPage() {
   return (
     <div className="report-page-wrap">
       <div className="report-frame">
-        <div className="report-title">Where&apos;s the cut?</div>
+        <div className="report-title">{t('report.title')}</div>
 
         <div className="report-field">
           <label className="report-field-label mono" htmlFor="location-search">
-            LOCATION
+            {t('report.locationLabel')}
           </label>
           {location && !editing ? (
             <div className="report-detected-row">
@@ -276,7 +282,7 @@ export function ReportPage() {
                 className="report-edit-link mono"
                 onClick={() => setEditing(true)}
               >
-                edit ✎
+                {t('report.editLink')}
               </button>
             </div>
           ) : (
@@ -286,7 +292,7 @@ export function ReportPage() {
                 className="report-pincode"
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-                placeholder="Search locality, city, or pincode"
+                placeholder={t('report.searchPlaceholder')}
                 autoComplete="off"
               />
               {search.trim().length >= 2 && suggestions.length > 0 && (
@@ -303,10 +309,9 @@ export function ReportPage() {
             </>
           )}
           <div className="report-help mono">
-            {locationStatus === 'locating' && 'Detecting your location…'}
-            {locationStatus === 'denied' &&
-              'Location permission is off. Search by locality or pincode instead.'}
-            {location?.source === 'geolocation' && 'Detected from this browser.'}
+            {locationStatus === 'locating' && t('report.detectingLocation')}
+            {locationStatus === 'denied' && t('report.locationDenied')}
+            {location?.source === 'geolocation' && t('report.detectedFromBrowser')}
           </div>
         </div>
 
@@ -314,7 +319,7 @@ export function ReportPage() {
           <>
             <div className="report-field">
               <label className="report-field-label mono" htmlFor="sector">
-                SECTOR / SUB-AREA (OPTIONAL)
+                {t('report.sectorLabel')}
               </label>
               <input
                 id="sector"
@@ -323,12 +328,12 @@ export function ReportPage() {
                 onChange={(event) =>
                   setLocation({ ...location, sector: event.target.value, source: 'manual' })
                 }
-                placeholder="Sector 2, Block A…"
+                placeholder={t('report.sectorPlaceholder')}
               />
             </div>
             <div className="report-field">
               <label className="report-field-label mono" htmlFor="pincode">
-                PINCODE
+                {t('report.pincodeLabel')}
               </label>
               <input
                 id="pincode"
@@ -345,7 +350,7 @@ export function ReportPage() {
 
         <div className="report-field">
           <div className="report-field-label mono" id="cut-type-label">
-            WHAT KIND OF CUT
+            {t('report.cutTypeLabel')}
           </div>
           <div className="type-toggle" role="group" aria-labelledby="cut-type-label">
             <button
@@ -353,22 +358,20 @@ export function ReportPage() {
               className={type === 'unexpected' ? 'type-toggle-btn active' : 'type-toggle-btn'}
               onClick={() => setType('unexpected')}
             >
-              Unexpected
+              {t('report.unexpected')}
             </button>
             <button
               type="button"
               className={type === 'planned' ? 'type-toggle-btn active' : 'type-toggle-btn'}
               onClick={() => setType('planned')}
             >
-              Planned
+              {t('report.planned')}
             </button>
           </div>
         </div>
 
         {location && nearbySlug && (
-          <div className="report-help">
-            There&apos;s already a live report nearby. Posting will add your observation to it.
-          </div>
+          <div className="report-help">{t('report.nearbyExists')}</div>
         )}
         {error && (
           <div className="report-error" role="alert">
@@ -376,9 +379,7 @@ export function ReportPage() {
           </div>
         )}
         {!verificationReady && (
-          <div className="report-help mono">
-            Reporting is paused until verification keys are configured.
-          </div>
+          <div className="report-help mono">{t('report.verificationPaused')}</div>
         )}
 
         <div className="report-submit-row">
@@ -390,7 +391,7 @@ export function ReportPage() {
             }}
             disabled={!canSubmit}
           >
-            {submitting ? 'Posting…' : 'Post it'}
+            {submitting ? t('report.posting') : t('report.postIt')}
           </button>
         </div>
       </div>

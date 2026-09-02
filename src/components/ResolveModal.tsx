@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useElapsed } from '../hooks/useElapsed';
 import type { Incident } from '../types';
 import { locationTitle } from '../lib/incidentCopy';
@@ -12,6 +13,7 @@ export function ResolveModal({
   onConfirm: () => void;
   onCancel: () => void;
 }) {
+  const { t } = useTranslation();
   const elapsed = useElapsed(incident.createdAt);
   const titleId = useId();
   const cancelRef = useRef<HTMLButtonElement>(null);
@@ -37,19 +39,16 @@ export function ResolveModal({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="resolve-sheet-title" id={titleId}>
-          Power back in {locationTitle(incident)}?
+          {t('resolve.title', { place: locationTitle(incident) })}
         </div>
-        <div className="resolve-sheet-copy mono">
-          This records your observation. The area stays ongoing until recent reports agree
-          it&apos;s back. Current timer: {elapsed}.
-        </div>
+        <div className="resolve-sheet-copy mono">{t('resolve.body', { elapsed })}</div>
         <button
           type="button"
           className="btn btn-primary"
           style={{ width: '100%', marginBottom: 10 }}
           onClick={onConfirm}
         >
-          Power is back
+          {t('resolve.confirm')}
         </button>
         <button
           ref={cancelRef}
@@ -57,7 +56,7 @@ export function ResolveModal({
           className="resolve-cancel mono"
           onClick={onCancel}
         >
-          Cancel
+          {t('resolve.cancel')}
         </button>
       </div>
     </div>
