@@ -160,6 +160,8 @@ interface SeoStrings {
   locationTitleSuffix: string;
   locationDescriptionWithReports: (place: string, count: number) => string;
   locationDescriptionEmpty: (place: string) => string;
+  locationLinkLabel: (place: string) => string;
+  locationKeywordLine: (place: string) => string;
   faq: (place: string) => { question: string; answer: string }[];
 }
 
@@ -178,6 +180,9 @@ const SEO_COPY: Record<SeoLanguage, SeoStrings> = {
       `Power cut in ${place} right now. Live power outage, electricity cut, and load-shedding updates from people nearby. ${count} live power-cut ${count === 1 ? 'report' : 'reports'} right now.`,
     locationDescriptionEmpty: (place) =>
       `Power cut in ${place} right now. Live power outage, electricity cut, and load-shedding updates from people nearby. No live reports yet — check here or add one in under 10 seconds.`,
+    locationLinkLabel: (place) => `Open live reports for ${place}`,
+    locationKeywordLine: (place) =>
+      `Also searched as power outage, electricity cut, load shedding, and no power in ${place}.`,
     faq: (place) => [
       {
         question: `Is there a power cut in ${place} right now?`,
@@ -207,6 +212,9 @@ const SEO_COPY: Record<SeoLanguage, SeoStrings> = {
       `${place} में अभी बिजली कटौती। आस-पास के लोगों से लाइव पावर आउटेज, इलेक्ट्रिसिटी कट, और लोड-शेडिंग अपडेट। अभी ${count} लाइव बिजली-कटौती ${count === 1 ? 'रिपोर्ट' : 'रिपोर्ट्स'}।`,
     locationDescriptionEmpty: (place) =>
       `${place} में अभी बिजली कटौती। आस-पास के लोगों से लाइव पावर आउटेज, इलेक्ट्रिसिटी कट, और लोड-शेडिंग अपडेट। अभी कोई लाइव रिपोर्ट नहीं — यहां देखें या 10 सेकंड में एक जोड़ें।`,
+    locationLinkLabel: (place) => `${place} की लाइव रिपोर्ट्स देखें`,
+    locationKeywordLine: (place) =>
+      `${place} में पावर आउटेज, इलेक्ट्रिसिटी कट, लोड शेडिंग, और बिजली नहीं होने के नाम से भी खोजा जाता है।`,
     faq: (place) => [
       {
         question: `क्या ${place} में अभी बिजली कटौती है?`,
@@ -241,6 +249,14 @@ export function locationDescription(
   return activeCount > 0
     ? copy.locationDescriptionWithReports(place, activeCount)
     : copy.locationDescriptionEmpty(place);
+}
+
+export function locationLinkLabel(place: string, language: SeoLanguage = 'en'): string {
+  return SEO_COPY[language].locationLinkLabel(place);
+}
+
+export function locationKeywordLine(place: string, language: SeoLanguage = 'en'): string {
+  return SEO_COPY[language].locationKeywordLine(place);
 }
 
 export function homeDocumentTitle(language: SeoLanguage = 'en'): string {

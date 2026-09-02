@@ -5,6 +5,8 @@ import {
   localizedSeoPath,
   locationDocumentTitle,
   locationJsonLd,
+  locationKeywordLine,
+  locationLinkLabel,
   powercutHeading,
   powercutPath,
   resolveSeoPlace,
@@ -70,5 +72,18 @@ describe('seo place URLs', () => {
     const webPage = graph.find((node) => node['@type'] === 'WebPage');
     expect(webPage?.url).toBe('https://powercuts.fyi/hi/powercut/bengaluru');
     expect(graph[0]?.inLanguage).toBe('hi-IN');
+  });
+
+  it('localizes the crawler body link and keyword copy', () => {
+    expect(locationLinkLabel('Bengaluru')).toBe('Open live reports for Bengaluru');
+    expect(locationKeywordLine('Bengaluru')).toContain('Also searched as');
+
+    const hindiLink = locationLinkLabel('Bengaluru', 'hi');
+    const hindiKeywords = locationKeywordLine('Bengaluru', 'hi');
+    expect(hindiLink).toContain('Bengaluru');
+    expect(hindiLink).not.toContain('Open live reports');
+    expect(hindiKeywords).not.toContain('Also searched as');
+    expect(/[\u0900-\u097F]/u.test(hindiLink)).toBe(true);
+    expect(/[\u0900-\u097F]/u.test(hindiKeywords)).toBe(true);
   });
 });

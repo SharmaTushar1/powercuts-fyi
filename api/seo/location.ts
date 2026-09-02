@@ -8,6 +8,8 @@ import {
   locationDescription,
   locationDocumentTitle,
   locationJsonLd,
+  locationKeywordLine,
+  locationLinkLabel,
   powercutHeading,
   resolveSeoPlace,
   type SeoLanguage,
@@ -148,9 +150,9 @@ export function createLocationSeoHandler(
           bodyHtml: `
     <h1>${escapeHtml(heading)}</h1>
     <p>${escapeHtml(description)}</p>
-    <p><a href="${escapeHtml(url)}">Open live reports for ${escapeHtml(resolved.displayName)}</a></p>
+    <p><a href="${escapeHtml(url)}">${escapeHtml(locationLinkLabel(resolved.displayName, language))}</a></p>
     ${faqs}
-    <p>Also searched as power outage, electricity cut, load shedding, and no power in ${escapeHtml(resolved.displayName)}.</p>
+    <p>${escapeHtml(locationKeywordLine(resolved.displayName, language))}</p>
 `,
         }),
       );
