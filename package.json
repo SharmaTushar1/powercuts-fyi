@@ -17,9 +17,11 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.109.0",
     "@vercel/analytics": "^2.0.1",
+    "i18next": "^26.4.0",
     "maplibre-gl": "^6.6.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-i18next": "^17.0.12",
     "react-router-dom": "^7.18.2",
     "zod": "^4.4.3"
   },

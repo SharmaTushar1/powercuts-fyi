@@ -14,6 +14,8 @@ export interface ResolvedSeoPlace {
   indexable: boolean;
 }
 
+export type SeoLanguage = 'en' | 'hi';
+
 const ACRONYMS = new Set([
   'btm',
   'cbt',
@@ -139,28 +141,97 @@ export function statePath(state: string): string {
   return `/in/${slugifyPlace(state)}`;
 }
 
-export function powercutHeading(place: string): string {
-  return `Power cut in ${place}`;
+interface SeoStrings {
+  homeTitle: string;
+  homeDescription: string;
+  inLanguage: string;
+  heading: (place: string) => string;
+  locationTitleSuffix: string;
+  locationDescriptionWithReports: (place: string, count: number) => string;
+  locationDescriptionEmpty: (place: string) => string;
+  faq: (place: string) => { question: string; answer: string }[];
 }
 
-export function locationDocumentTitle(place: string): string {
-  return `${powercutHeading(place)} — live outage reports | powercuts.fyi`;
+const SEO_COPY: Record<SeoLanguage, SeoStrings> = {
+  en: {
+    homeTitle: 'Live power cuts in India | powercuts.fyi',
+    homeDescription:
+      'Live power cut, power outage, and electricity cut reports across India. Search your city or locality, see if the lights are out nearby, and report a cut with no signup.',
+    inLanguage: 'en-IN',
+    heading: (place) => `Power cut in ${place}`,
+    locationTitleSuffix: '— live outage reports | powercuts.fyi',
+    locationDescriptionWithReports: (place, count) =>
+      `Power cut in ${place} right now. Live power outage, electricity cut, and load-shedding updates from people nearby. ${count} live power-cut ${count === 1 ? 'report' : 'reports'} right now.`,
+    locationDescriptionEmpty: (place) =>
+      `Power cut in ${place} right now. Live power outage, electricity cut, and load-shedding updates from people nearby. No live reports yet — check here or add one in under 10 seconds.`,
+    faq: (place) => [
+      {
+        question: `Is there a power cut in ${place} right now?`,
+        answer: `powercuts.fyi shows live, crowdsourced power-cut reports for ${place}. If neighbours mark power out, the area stays ongoing until recent reports agree the electricity is back.`,
+      },
+      {
+        question: `Why is there no electricity in ${place}?`,
+        answer: `Cuts are often unexpected local faults, planned maintenance, or load shedding. This site does not speak for the DISCOM — it shows what people in ${place} are reporting right now.`,
+      },
+      {
+        question: `Power outage near me in ${place} — how do I check?`,
+        answer: `Open the ${place} page on powercuts.fyi, scan live reports for your locality, or drop a report yourself. No signup, no app download.`,
+      },
+    ],
+  },
+  hi: {
+    homeTitle: 'भारत में लाइव बिजली कटौती | powercuts.fyi',
+    homeDescription:
+      'पूरे भारत में लाइव बिजली कटौती, पावर आउटेज, और इलेक्ट्रिसिटी कट की रिपोर्ट्स। अपना शहर या इलाका खोजें, देखें कि आस-पास बिजली गई है या नहीं, और बिना साइनअप के रिपोर्ट करें।',
+    inLanguage: 'hi-IN',
+    heading: (place) => `${place} में बिजली कटौती`,
+    locationTitleSuffix: '— लाइव आउटेज रिपोर्ट्स | powercuts.fyi',
+    locationDescriptionWithReports: (place, count) =>
+      `${place} में अभी बिजली कटौती। आस-पास के लोगों से लाइव पावर आउटेज, इलेक्ट्रिसिटी कट, और लोड-शेडिंग अपडेट। अभी ${count} लाइव बिजली-कटौती ${count === 1 ? 'रिपोर्ट' : 'रिपोर्ट्स'}।`,
+    locationDescriptionEmpty: (place) =>
+      `${place} में अभी बिजली कटौती। आस-पास के लोगों से लाइव पावर आउटेज, इलेक्ट्रिसिटी कट, और लोड-शेडिंग अपडेट। अभी कोई लाइव रिपोर्ट नहीं — यहां देखें या 10 सेकंड में एक जोड़ें।`,
+    faq: (place) => [
+      {
+        question: `क्या ${place} में अभी बिजली कटौती है?`,
+        answer: `powercuts.fyi ${place} के लिए लाइव, क्राउडसोर्स्ड बिजली-कटौती रिपोर्ट्स दिखाता है। यदि आस-पास के लोग बिजली गई हुई बताते हैं, तो क्षेत्र तब तक जारी दिखता है जब तक हाल की रिपोर्ट्स इस बात पर सहमत न हों कि बिजली वापस आ गई है।`,
+      },
+      {
+        question: `${place} में बिजली क्यों नहीं है?`,
+        answer: `कट अक्सर अचानक हुई स्थानीय ख़राबी, तय मेंटेनेंस, या लोड-शेडिंग की वजह से होते हैं। यह साइट DISCOM की तरफ़ से नहीं बोलती — यह बताती है कि ${place} में लोग अभी क्या रिपोर्ट कर रहे हैं।`,
+      },
+      {
+        question: `${place} में मेरे पास बिजली कटौती — कैसे चेक करूं?`,
+        answer: `powercuts.fyi पर ${place} का पेज खोलें, अपने इलाके के लिए लाइव रिपोर्ट्स देखें, या खुद एक रिपोर्ट डालें। कोई साइनअप नहीं, कोई ऐप डाउनलोड नहीं।`,
+      },
+    ],
+  },
+};
+
+export function powercutHeading(place: string, language: SeoLanguage = 'en'): string {
+  return SEO_COPY[language].heading(place);
 }
 
-export function locationDescription(place: string, activeCount = 0): string {
-  const status =
-    activeCount > 0
-      ? `${activeCount} live power-cut ${activeCount === 1 ? 'report' : 'reports'} right now.`
-      : 'No live reports yet — check here or add one in under 10 seconds.';
-  return `${powercutHeading(place)} right now. Live power outage, electricity cut, and load-shedding updates from people nearby. ${status}`;
+export function locationDocumentTitle(place: string, language: SeoLanguage = 'en'): string {
+  return `${powercutHeading(place, language)} ${SEO_COPY[language].locationTitleSuffix}`;
 }
 
-export function homeDocumentTitle(): string {
-  return 'Live power cuts in India | powercuts.fyi';
+export function locationDescription(
+  place: string,
+  activeCount = 0,
+  language: SeoLanguage = 'en',
+): string {
+  const copy = SEO_COPY[language];
+  return activeCount > 0
+    ? copy.locationDescriptionWithReports(place, activeCount)
+    : copy.locationDescriptionEmpty(place);
 }
 
-export function homeDescription(): string {
-  return 'Live power cut, power outage, and electricity cut reports across India. Search your city or locality, see if the lights are out nearby, and report a cut with no signup.';
+export function homeDocumentTitle(language: SeoLanguage = 'en'): string {
+  return SEO_COPY[language].homeTitle;
+}
+
+export function homeDescription(language: SeoLanguage = 'en'): string {
+  return SEO_COPY[language].homeDescription;
 }
 
 export function resolveSeoPlace(
@@ -262,31 +333,21 @@ export function uniqueIndexablePaths(extraPlaces: readonly SeoPlace[] = []): str
   return [...paths].sort();
 }
 
-export function faqItems(place: string): { question: string; answer: string }[] {
-  return [
-    {
-      question: `Is there a power cut in ${place} right now?`,
-      answer: `powercuts.fyi shows live, crowdsourced power-cut reports for ${place}. If neighbours mark power out, the area stays ongoing until recent reports agree the electricity is back.`,
-    },
-    {
-      question: `Why is there no electricity in ${place}?`,
-      answer: `Cuts are often unexpected local faults, planned maintenance, or load shedding. This site does not speak for the DISCOM — it shows what people in ${place} are reporting right now.`,
-    },
-    {
-      question: `Power outage near me in ${place} — how do I check?`,
-      answer: `Open the ${place} page on powercuts.fyi, scan live reports for your locality, or drop a report yourself. No signup, no app download.`,
-    },
-  ];
+export function faqItems(
+  place: string,
+  language: SeoLanguage = 'en',
+): { question: string; answer: string }[] {
+  return SEO_COPY[language].faq(place);
 }
 
-export function websiteJsonLd(origin: string): Record<string, unknown> {
+export function websiteJsonLd(origin: string, language: SeoLanguage = 'en'): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'powercuts.fyi',
     url: origin,
-    inLanguage: 'en-IN',
-    description: homeDescription(),
+    inLanguage: SEO_COPY[language].inLanguage,
+    description: homeDescription(language),
     potentialAction: {
       '@type': 'SearchAction',
       target: `${origin}/powercut/{search_term_string}`,
@@ -299,16 +360,17 @@ export function locationJsonLd(
   origin: string,
   place: ResolvedSeoPlace,
   activeCount: number,
+  language: SeoLanguage = 'en',
 ): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@graph': [
-      websiteJsonLd(origin),
+      websiteJsonLd(origin, language),
       {
         '@type': 'WebPage',
-        name: powercutHeading(place.displayName),
+        name: powercutHeading(place.displayName, language),
         url: `${origin}${place.path}`,
-        description: locationDescription(place.displayName, activeCount),
+        description: locationDescription(place.displayName, activeCount, language),
         about: {
           '@type': 'Place',
           name: place.displayName,
@@ -322,7 +384,7 @@ export function locationJsonLd(
       },
       {
         '@type': 'FAQPage',
-        mainEntity: faqItems(place.displayName).map((item) => ({
+        mainEntity: faqItems(place.displayName, language).map((item) => ({
           '@type': 'Question',
           name: item.question,
           acceptedAnswer: {

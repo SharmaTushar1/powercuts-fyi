@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { Incident } from '../types';
 
 export function locationTitle(incident: Incident): string {
@@ -6,9 +7,11 @@ export function locationTitle(incident: Incident): string {
   return `${area}, ${city}`;
 }
 
-export function consensusSummary(incident: Incident): string {
+export function consensusSummary(incident: Incident, t: TFunction): string {
   const { participantCount, outPercentage, backPercentage } = incident.consensus;
-  const people =
-    participantCount === 1 ? '1 recent report' : `${participantCount} recent reports`;
-  return `${people} · ${Math.round(outPercentage)}% power out · ${Math.round(backPercentage)}% power back`;
+  return t('card.consensusSummary', {
+    count: participantCount,
+    outPercent: Math.round(outPercentage),
+    backPercent: Math.round(backPercentage),
+  });
 }

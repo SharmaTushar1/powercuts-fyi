@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { LocationAggregate } from '../types';
+import { localizedPath } from '../i18n/paths';
 import './BrowseSection.css';
 
 export function BrowseSection({
@@ -8,6 +10,9 @@ export function BrowseSection({
 }: {
   aggregates: LocationAggregate[];
 }) {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language === 'hi' ? 'hi' : 'en';
+  const home = localizedPath('/', language);
   const groups = useMemo(() => {
     const byState = new Map<string, LocationAggregate[]>();
     for (const aggregate of aggregates) {
@@ -60,18 +65,18 @@ export function BrowseSection({
 
   return (
     <section className="browse-section container-pad" id="browse">
-      <div className="section-label">04 — BROWSE BY REGION</div>
-      <div className="browse-heading">Fallback path when you&apos;re not the one it&apos;s happening to</div>
+      <div className="section-label">{t('browse.sectionLabel')}</div>
+      <div className="browse-heading">{t('browse.heading')}</div>
 
       <div className="browse-grid">
         <div className="browse-col">
           <label className="visually-hidden" htmlFor="browse-search">
-            Search state
+            {t('browse.searchLabel')}
           </label>
           <input
             id="browse-search"
             className="browse-search mono"
-            placeholder="Search state…"
+            placeholder={t('browse.searchPlaceholder')}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
@@ -89,12 +94,16 @@ export function BrowseSection({
                 {group.state}
               </button>
             ))}
-            {visibleStates.length === 0 && <div className="browse-empty mono">No states match.</div>}
+            {visibleStates.length === 0 && (
+              <div className="browse-empty mono">{t('browse.noStatesMatch')}</div>
+            )}
           </div>
         </div>
 
         <div className="browse-col">
-          <div className="browse-col-label mono">CITIES IN {stateGroup?.state.toUpperCase() ?? '—'}</div>
+          <div className="browse-col-label mono">
+            {t('browse.citiesIn', { state: stateGroup?.state.toUpperCase() ?? '—' })}
+          </div>
           <div className="browse-list">
             {stateGroup?.cities.map((city) => (
               <button
@@ -111,7 +120,7 @@ export function BrowseSection({
 
         <div className="browse-col">
           <div className="browse-col-label mono">
-            LOCALITIES IN {cityGroup?.city.toUpperCase() ?? '—'}
+            {t('browse.localitiesIn', { city: cityGroup?.city.toUpperCase() ?? '—' })}
           </div>
           <div className="browse-locality-list">
             {cityGroup?.localities.map((locality) => {
@@ -126,7 +135,7 @@ export function BrowseSection({
               return (
                 <Link
                   className="browse-locality-row"
-                  to={{ pathname: '/', search: params.toString(), hash: 'feed' }}
+                  to={{ pathname: home, search: params.toString(), hash: 'feed' }}
                   key={`${locality.locality}:${locality.sector ?? ''}`}
                 >
                   <span>{locality.label}</span>
@@ -135,9 +144,7 @@ export function BrowseSection({
               );
             })}
           </div>
-          <div className="browse-note mono">
-            Counts are active incidents today, grouped by locality and optional sector.
-          </div>
+          <div className="browse-note mono">{t('browse.note')}</div>
         </div>
       </div>
     </section>

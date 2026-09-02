@@ -73,15 +73,17 @@
   overflow: hidden;
 }
 
-.lang-toggle button {
-  border: none;
-  background: transparent;
+.lang-toggle a {
   padding: 6px 11px;
   color: var(--muted-2);
 }
 
-.lang-toggle button.active {
+.lang-toggle a.active {
   background: var(--ink);
+  color: var(--paper);
+}
+
+.lang-toggle a.active:hover {
   color: var(--paper);
 }
 

@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useReports } from '../context/ReportsContext';
 import { ReportCard } from '../components/ReportCard';
 import { ResolveModal } from '../components/ResolveModal';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { isTurnstileConfigured, requestTurnstileToken } from '../lib/turnstile';
 import { getSiteOrigin } from '../lib/site';
+import { localizedPath } from '../i18n/paths';
 import {
   faqItems,
   locationDescription,
@@ -20,6 +22,10 @@ import './LocationPage.css';
 const VISIBLE_INCIDENTS_LIMIT = 30;
 
 export function LocationPage() {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language === 'hi' ? 'hi' : 'en';
+  const home = localizedPath('/', language);
+  const reportPath = localizedPath('/report', language);
   const params = useParams<{ city?: string; locality?: string; state?: string }>();
   const primarySlug = params.city ?? params.state ?? '';
   const localitySlug = params.locality;
@@ -67,22 +73,22 @@ export function LocationPage() {
     };
   }, [fetchIncidents, filterQuery]);
 
-  const heading = powercutHeading(resolved.displayName);
-  const description = locationDescription(resolved.displayName, activeCount);
+  const heading = powercutHeading(resolved.displayName, language);
+  const description = locationDescription(resolved.displayName, activeCount, language);
   const origin = getSiteOrigin();
 
   usePageMeta({
-    title: locationDocumentTitle(resolved.displayName),
+    title: locationDocumentTitle(resolved.displayName, language),
     description,
     path: resolved.path,
     index: resolved.indexable || activeCount > 0,
-    jsonLd: locationJsonLd(origin, resolved, activeCount),
+    jsonLd: locationJsonLd(origin, resolved, activeCount, language),
   });
 
   const observe = async (incident: Incident, state: 'out' | 'back'): Promise<void> => {
     setActionError(null);
     if (!isTurnstileConfigured()) {
-      setActionError('Verification is not configured, so observations are paused.');
+      setActionError(t('common.verificationPaused'));
       return;
     }
     setPendingIds((current) => new Set(current).add(incident.id));
@@ -91,7 +97,7 @@ export function LocationPage() {
       await submitObservation({ incidentId: incident.id, state, turnstileToken: token });
     } catch (caught) {
       setActionError(
-        caught instanceof Error ? caught.message : 'Unable to record that observation.',
+        caught instanceof Error ? caught.message : t('common.unableToRecordObservation'),
       );
     } finally {
       setPendingIds((current) => {
@@ -104,8 +110,8 @@ export function LocationPage() {
 
   return (
     <div className="location-page container-pad">
-      <Link to="/" className="back-link mono">
-        ← back to all reports
+      <Link to={home} className="back-link mono">
+        {t('location.backToAll')}
       </Link>
 
       <h1 className="location-heading">{heading}</h1>
@@ -118,10 +124,12 @@ export function LocationPage() {
       )}
 
       <div className="location-list">
-        {incidents === null && <div className="location-loading mono">Loading reports…</div>}
+        {incidents === null && (
+          <div className="location-loading mono">{t('common.loadingReports')}</div>
+        )}
         {incidents?.length === 0 && (
           <div className="location-empty mono">
-            No reports yet for {resolved.displayName}. Be the first to report a cut here.
+            {t('location.noReportsYet', { place: resolved.displayName })}
           </div>
         )}
         {incidents?.map((incident) => (
@@ -137,12 +145,12 @@ export function LocationPage() {
         ))}
       </div>
 
-      <Link to="/report" className="btn btn-primary location-report-cta">
-        Report a cut in {resolved.displayName} →
+      <Link to={reportPath} className="btn btn-primary location-report-cta">
+        {t('location.reportCutIn', { place: resolved.displayName })}
       </Link>
 
       <div className="location-faq">
-        {faqItems(resolved.displayName).map((item) => (
+        {faqItems(resolved.displayName, language).map((item) => (
           <div className="location-faq-item" key={item.question}>
             <h2>{item.question}</h2>
             <p>{item.answer}</p>

@@ -1,8 +1,10 @@
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Trans, useTranslation } from 'react-i18next';
 import type { Incident, NearbyIncident } from '../types';
 import { orderIncidentsByProximity } from '../lib/nearbyFeed';
 import { ReportCard } from './ReportCard';
+import { localizedPath } from '../i18n/paths';
 import './ReportsSection.css';
 
 const IncidentMap = lazy(async () => {
@@ -32,6 +34,10 @@ export function ReportsSection({
   selectedId?: string | null;
   mapCenter?: { latitude: number; longitude: number } | null;
 }) {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language === 'hi' ? 'hi' : 'en';
+  const home = localizedPath('/', language);
+  const reportPath = localizedPath('/report', language);
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -61,7 +67,7 @@ export function ReportsSection({
     }
     void navigate(
       {
-        pathname: '/',
+        pathname: home,
         search: next.toString(),
         hash: location.hash.slice(1),
       },
@@ -140,7 +146,7 @@ export function ReportsSection({
         <div>
           <div className="section-label">02 — LIVE FEED</div>
           <div className="reports-heading">
-            {nearby.length > 0 ? 'Near you, then nationwide' : 'Most recent first'}
+            {nearby.length > 0 ? t('reports.headingNearby') : t('reports.headingDefault')}
           </div>
         </div>
         <div className="reports-tabs mono" id="map">
@@ -148,26 +154,26 @@ export function ReportsSection({
             type="button"
             className={tab === 'feed' ? 'reports-tab active' : 'reports-tab'}
             onClick={() => {
-              void navigate({ pathname: '/', search: location.search, hash: 'feed' });
+              void navigate({ pathname: home, search: location.search, hash: 'feed' });
             }}
           >
-            FEED
+            {t('reports.tabFeed')}
           </button>
           <button
             type="button"
             className={tab === 'map' ? 'reports-tab active' : 'reports-tab'}
             onClick={() => {
-              void navigate({ pathname: '/', search: location.search, hash: 'map' });
+              void navigate({ pathname: home, search: location.search, hash: 'map' });
             }}
           >
-            MAP
+            {t('reports.tabMap')}
           </button>
         </div>
       </div>
 
       <div className="reports-filters mono">
         <label className="visually-hidden" htmlFor="filter-state">
-          State
+          {t('reports.filterStateLabel')}
         </label>
         <select
           id="filter-state"
@@ -177,7 +183,7 @@ export function ReportsSection({
             setFilter('state', event.target.value, ['city', 'locality', 'sector']);
           }}
         >
-          <option value="all">All India ▾</option>
+          <option value="all">{t('reports.allIndia')}</option>
           {states.map((value) => (
             <option key={value} value={value}>
               {value}
@@ -185,7 +191,7 @@ export function ReportsSection({
           ))}
         </select>
         <label className="visually-hidden" htmlFor="filter-city">
-          City
+          {t('reports.filterCityLabel')}
         </label>
         <select
           id="filter-city"
@@ -196,7 +202,7 @@ export function ReportsSection({
           }}
           disabled={state === 'all'}
         >
-          <option value="all">All cities ▾</option>
+          <option value="all">{t('reports.allCities')}</option>
           {cities.map((value) => (
             <option key={value} value={value}>
               {value}
@@ -204,7 +210,7 @@ export function ReportsSection({
           ))}
         </select>
         <label className="visually-hidden" htmlFor="filter-locality">
-          Locality
+          {t('reports.filterLocalityLabel')}
         </label>
         <select
           id="filter-locality"
@@ -213,7 +219,7 @@ export function ReportsSection({
           onChange={(event) => setFilter('locality', event.target.value, ['sector'])}
           disabled={city === 'all'}
         >
-          <option value="all">All localities ▾</option>
+          <option value="all">{t('reports.allLocalities')}</option>
           {localities.map((value) => (
             <option key={value} value={value}>
               {value}
@@ -221,7 +227,7 @@ export function ReportsSection({
           ))}
         </select>
         <label className="visually-hidden" htmlFor="filter-sector">
-          Sector
+          {t('reports.filterSectorLabel')}
         </label>
         <select
           id="filter-sector"
@@ -230,7 +236,7 @@ export function ReportsSection({
           onChange={(event) => setFilter('sector', event.target.value)}
           disabled={locality === 'all' || sectors.length === 0}
         >
-          <option value="all">All sectors ▾</option>
+          <option value="all">{t('reports.allSectors')}</option>
           {sectors.map((value) => (
             <option key={value} value={value}>
               {value}
@@ -238,7 +244,7 @@ export function ReportsSection({
           ))}
         </select>
         <label className="visually-hidden" htmlFor="filter-type">
-          Cut type
+          {t('reports.filterTypeLabel')}
         </label>
         <select
           id="filter-type"
@@ -246,9 +252,9 @@ export function ReportsSection({
           value={typeFilter}
           onChange={(event) => setFilter('type', event.target.value)}
         >
-          <option value="all">Planned + Unexpected ▾</option>
-          <option value="unexpected">Unexpected only</option>
-          <option value="planned">Planned only</option>
+          <option value="all">{t('reports.allTypes')}</option>
+          <option value="unexpected">{t('reports.unexpectedOnly')}</option>
+          <option value="planned">{t('reports.plannedOnly')}</option>
         </select>
       </div>
 
@@ -257,11 +263,11 @@ export function ReportsSection({
           {duplicateCandidate && (
             <div className="duplicate-card">
               <div>
-                Someone reported an outage{' '}
-                <strong>
-                  {Math.round(duplicateCandidate.distanceKm * 1000)}m away
-                </strong>
-                . Same cut?
+                <Trans
+                  i18nKey="reports.duplicatePrompt"
+                  values={{ distance: Math.round(duplicateCandidate.distanceKm * 1000) }}
+                  components={{ bold: <strong /> }}
+                />
               </div>
               <div className="duplicate-actions">
                 <button
@@ -272,17 +278,17 @@ export function ReportsSection({
                     setDismissedDuplicate(true);
                   }}
                 >
-                  Yes, confirm it
+                  {t('reports.yesConfirm')}
                 </button>
-                <Link to="/report" className="btn btn-secondary btn-sm mono">
-                  No, new report
+                <Link to={reportPath} className="btn btn-secondary btn-sm mono">
+                  {t('reports.noNewReport')}
                 </Link>
               </div>
             </div>
           )}
 
           {filtered.length === 0 && (
-            <div className="reports-empty mono">No reports match these filters.</div>
+            <div className="reports-empty mono">{t('reports.noMatches')}</div>
           )}
 
           {filtered.map((incident) => (
@@ -296,7 +302,7 @@ export function ReportsSection({
           ))}
         </div>
       ) : (
-        <Suspense fallback={<div className="map-placeholder mono">Loading map…</div>}>
+        <Suspense fallback={<div className="map-placeholder mono">{t('reports.loadingMap')}</div>}>
           <IncidentMap
             incidents={filtered}
             selectedId={selectedId}
@@ -306,10 +312,7 @@ export function ReportsSection({
         </Suspense>
       )}
 
-      <div className="reports-footnote mono">
-        Reports inactive for at least 24 hours are resolved during daily cleanup. Status follows
-        recent community consensus, not the last click.
-      </div>
+      <div className="reports-footnote mono">{t('reports.footnote')}</div>
     </section>
   );
 }

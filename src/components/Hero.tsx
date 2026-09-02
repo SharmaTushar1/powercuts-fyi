@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { AggregateStats, LocationAggregate, NearbyLocalityStats, Report } from '../types';
 import { useElapsed } from '../hooks/useElapsed';
 import { StatusBadge } from './StatusBadge';
+import { localizedPath } from '../i18n/paths';
 import './Hero.css';
 
 interface HeroProps {
@@ -12,6 +14,8 @@ interface HeroProps {
 }
 
 export function Hero({ latest, stats, mostAffected, nearby }: HeroProps) {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language === 'hi' ? 'hi' : 'en';
   const elapsed = useElapsed(latest?.reportedAt ?? new Date(0).toISOString(), latest?.resolvedAt);
   const largestAffectedCount = Math.max(
     ...mostAffected.map((location) => location.incidentCount),
@@ -22,41 +26,40 @@ export function Hero({ latest, stats, mostAffected, nearby }: HeroProps) {
     <section className="hero container-pad" id="top">
       <div className="hero-live mono">
         <span className="live-dot" />
-        LIVE · {stats?.incidentsLast10Minutes ?? 0} CUTS REPORTED · LAST 10 MIN ·{' '}
-        {stats?.affectedStates ?? 0} STATES
+        {t('hero.live', {
+          count: stats?.incidentsLast10Minutes ?? 0,
+          states: stats?.affectedStates ?? 0,
+        })}
       </div>
 
       <div className="hero-headline">
         {nearby ? (
           <>
             <div className="hero-number mono">{nearby.activeIncidentCount}</div>
-            <h1>power cuts active near {nearby.locality} right now.</h1>
+            <h1>{t('hero.nearbyHeadline', { place: nearby.locality })}</h1>
           </>
         ) : (
           <>
             <div className="hero-number mono">{stats?.incidentsLast10Minutes ?? 0}</div>
-            <h1>power cuts reported in the last 10 minutes, across India.</h1>
+            <h1>{t('hero.nationalHeadline')}</h1>
           </>
         )}
       </div>
 
-      <p className="hero-sub">
-        Crowdsourced power-cut reports for your area. No signup, no app download, no calling a
-        DISCOM helpline that never picks up.
-      </p>
+      <p className="hero-sub">{t('hero.sub')}</p>
 
       <div className="hero-ctas">
-        <Link to="/report" className="btn btn-primary">
-          Report a cut →
+        <Link to={localizedPath('/report', language)} className="btn btn-primary">
+          {t('hero.reportCta')}
         </Link>
         <a href="#feed" className="btn btn-secondary">
-          Browse reports
+          {t('hero.browseCta')}
         </a>
       </div>
 
       <div className="hero-panel">
         <div className="hero-panel-col">
-          <div className="section-label">LATEST REPORT</div>
+          <div className="section-label">{t('hero.latestReport')}</div>
           {latest ? (
             <>
               <StatusBadge type={latest.type} status={latest.status} />
@@ -64,23 +67,30 @@ export function Hero({ latest, stats, mostAffected, nearby }: HeroProps) {
                 {latest.locality}, {latest.city}
               </div>
               <div className="hero-panel-meta mono">
-                {latest.status === 'resolved' ? 'resolved after' : 'reported'} {elapsed} ago
+                {latest.status === 'resolved'
+                  ? t('hero.resolvedAfter', { elapsed })
+                  : t('hero.reportedAgo', { elapsed })}
               </div>
             </>
           ) : (
-            <div className="hero-panel-meta mono">No reports yet</div>
+            <div className="hero-panel-meta mono">{t('hero.noReportsYet')}</div>
           )}
         </div>
         <div className="hero-panel-col">
-          <div className="section-label">CUTS RIGHT NOW</div>
+          <div className="section-label">{t('hero.cutsRightNow')}</div>
           <div className="hero-panel-big mono">{stats?.activeIncidents ?? 0}</div>
           <div className="hero-panel-meta mono">
-            across India
-            {nearby ? ` · ${nearby.activeIncidentCount} in ${nearby.locality} right now` : ''}
+            {t('hero.acrossIndia')}
+            {nearby
+              ? t('hero.nearbyRightNow', {
+                  count: nearby.activeIncidentCount,
+                  place: nearby.locality,
+                })
+              : ''}
           </div>
         </div>
         <div className="hero-panel-col hero-panel-col-wide">
-          <div className="section-label">MOST AFFECTED TODAY</div>
+          <div className="section-label">{t('hero.mostAffectedToday')}</div>
           <div className="affected-list">
             {mostAffected.map((location) => (
               <div
@@ -102,7 +112,7 @@ export function Hero({ latest, stats, mostAffected, nearby }: HeroProps) {
               </div>
             ))}
             {mostAffected.length === 0 && (
-              <div className="hero-panel-meta mono">No affected areas yet</div>
+              <div className="hero-panel-meta mono">{t('hero.noAffectedAreas')}</div>
             )}
           </div>
         </div>

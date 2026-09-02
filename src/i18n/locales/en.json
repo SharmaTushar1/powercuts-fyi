@@ -1,0 +1,181 @@
+{
+  "utility": {
+    "vision": "OUR VISION — why we built this →",
+    "support": "SUPPORT US — chip in on Ko-fi →"
+  },
+  "nav": {
+    "reports": "REPORTS",
+    "map": "MAP",
+    "browse": "BROWSE",
+    "howItWorks": "HOW IT WORKS",
+    "reportCut": "REPORT A CUT →"
+  },
+  "footer": {
+    "tagline": "Crowdsourced power-cut reports for your area.",
+    "support": "Support on Ko-fi"
+  },
+  "hero": {
+    "live": "LIVE · {{count}} CUTS REPORTED · LAST 10 MIN · {{states}} STATES",
+    "nationalHeadline": "power cuts reported in the last 10 minutes, across India.",
+    "nearbyHeadline": "power cuts active near {{place}} right now.",
+    "sub": "Crowdsourced power-cut reports for your area. No signup, no app download, no calling a DISCOM helpline that never picks up.",
+    "reportCta": "Report a cut →",
+    "browseCta": "Browse reports",
+    "latestReport": "LATEST REPORT",
+    "noReportsYet": "No reports yet",
+    "reportedAgo": "reported {{elapsed}} ago",
+    "resolvedAfter": "resolved after {{elapsed}} ago",
+    "cutsRightNow": "CUTS RIGHT NOW",
+    "acrossIndia": "across India",
+    "nearbyRightNow": "· {{count}} in {{place}} right now",
+    "mostAffectedToday": "MOST AFFECTED TODAY",
+    "noAffectedAreas": "No affected areas yet"
+  },
+  "cta": {
+    "title": "Reports that get confirmed get noticed faster.",
+    "sub": "A tap turns \"is it just me?\" into a number everyone can see.",
+    "cta": "HOW IT WORKS →"
+  },
+  "howItWorks": {
+    "sectionLabel": "05 — HOW IT WORKS",
+    "heading": "Report, confirm, resolve — on a patchy connection",
+    "step1Title": "Report",
+    "step1Body": "Drop your location (detected automatically, or a pincode) and say if it's a planned or unexpected cut. Takes under 10 seconds.",
+    "step2Title": "Confirm",
+    "step2Body": "Anyone nearby can say still out or power back. The area status follows recent consensus, not a single click.",
+    "step3Title": "Track",
+    "step3Body": "The report gets a shareable permalink with a live timer, so you can send it instead of explaining it.",
+    "cta": "Report a cut →"
+  },
+  "reports": {
+    "headingNearby": "Near you, then nationwide",
+    "headingDefault": "Most recent first",
+    "tabFeed": "FEED",
+    "tabMap": "MAP",
+    "filterStateLabel": "State",
+    "filterCityLabel": "City",
+    "filterLocalityLabel": "Locality",
+    "filterSectorLabel": "Sector",
+    "filterTypeLabel": "Cut type",
+    "allIndia": "All India ▾",
+    "allCities": "All cities ▾",
+    "allLocalities": "All localities ▾",
+    "allSectors": "All sectors ▾",
+    "allTypes": "Planned + Unexpected ▾",
+    "unexpectedOnly": "Unexpected only",
+    "plannedOnly": "Planned only",
+    "duplicatePrompt": "Someone reported an outage <bold>{{distance}}m away</bold>. Same cut?",
+    "yesConfirm": "Yes, confirm it",
+    "noNewReport": "No, new report",
+    "noMatches": "No reports match these filters.",
+    "loadingMap": "Loading map…",
+    "footnote": "Reports inactive for at least 24 hours are resolved during daily cleanup. Status follows recent community consensus, not the last click."
+  },
+  "badge": {
+    "resolved": "✓ RESOLVED",
+    "unexpected": "UNEXPECTED",
+    "planned": "PLANNED"
+  },
+  "card": {
+    "lasted": "Lasted",
+    "ongoing": "Ongoing —",
+    "consensusSummary_one": "{{count}} recent report · {{outPercent}}% power out · {{backPercent}}% power back",
+    "consensusSummary_other": "{{count}} recent reports · {{outPercent}}% power out · {{backPercent}}% power back",
+    "stillOut": "▲ Still out?",
+    "powersBack": "Power’s back"
+  },
+  "resolve": {
+    "title": "Power back in {{place}}?",
+    "body": "This records your observation. The area stays ongoing until recent reports agree it's back. Current timer: {{elapsed}}.",
+    "confirm": "Power is back",
+    "cancel": "Cancel"
+  },
+  "permalink": {
+    "notFoundLabel": "REPORT NOT FOUND",
+    "notFoundBody": "This report doesn't exist, or it's older than our public archive.",
+    "unableToLoad": "Unable to load this report.",
+    "unableToRecord": "Unable to record that observation.",
+    "backToFeed": "← back to feed",
+    "reportedAt": "Reported {{time}} · {{state}}",
+    "stillOutConfirm": "▲ Still out? Confirm",
+    "powersBack": "Power’s back",
+    "howShared": "HOW THIS LOOKS SHARED",
+    "share": "Share",
+    "copied": "Copied!",
+    "shareTitle": "Power cut in {{place}}",
+    "nearbyReports": "NEARBY REPORTS"
+  },
+  "browse": {
+    "sectionLabel": "04 — BROWSE BY REGION",
+    "heading": "Fallback path when you're not the one it's happening to",
+    "searchLabel": "Search state",
+    "searchPlaceholder": "Search state…",
+    "noStatesMatch": "No states match.",
+    "citiesIn": "CITIES IN {{state}}",
+    "localitiesIn": "LOCALITIES IN {{city}}",
+    "note": "Counts are active incidents today, grouped by locality and optional sector."
+  },
+  "report": {
+    "title": "Where's the cut?",
+    "locationLabel": "LOCATION",
+    "editLink": "edit ✎",
+    "searchPlaceholder": "Search locality, city, or pincode",
+    "detectingLocation": "Detecting your location…",
+    "locationDenied": "Location permission is off. Search by locality or pincode instead.",
+    "detectedFromBrowser": "Detected from this browser.",
+    "sectorLabel": "SECTOR / SUB-AREA (OPTIONAL)",
+    "sectorPlaceholder": "Sector 2, Block A…",
+    "pincodeLabel": "PINCODE",
+    "cutTypeLabel": "WHAT KIND OF CUT",
+    "unexpected": "Unexpected",
+    "planned": "Planned",
+    "nearbyExists": "There's already a live report nearby. Posting will add your observation to it.",
+    "verificationPaused": "Reporting is paused until verification keys are configured.",
+    "posting": "Posting…",
+    "postIt": "Post it",
+    "unableToPost": "Unable to post this report right now.",
+    "currentLocation": "Current location",
+    "unknownCity": "Unknown city",
+    "unknownState": "Unknown state",
+    "joinedTitle": "Added to the local report.",
+    "postedTitle": "Reported. Thanks for the heads up.",
+    "liveInFeed": "It's live in the {{locality}} feed now.",
+    "copyLinkLabel": "Copy report link",
+    "unableToCopy": "Unable to copy the link from this browser.",
+    "unableToCopyRetry": "Unable to copy the link. Try sharing another way.",
+    "viewReport": "View report →",
+    "shareWhatsAppText": "Power cut reported in {{locality}}, {{city}} — {{url}}",
+    "shareTweetText": "Power cut in {{locality}}, {{city}}"
+  },
+  "common": {
+    "loadingReports": "Loading reports…",
+    "verificationPaused": "Verification is not configured, so observations are paused.",
+    "unableToRecordObservation": "Unable to record that observation.",
+    "skipToReports": "Skip to reports",
+    "backHome": "← back home"
+  },
+  "location": {
+    "backToAll": "← back to all reports",
+    "noReportsYet": "No reports yet for {{place}}. Be the first to report a cut here.",
+    "reportCutIn": "Report a cut in {{place}} →"
+  },
+  "vision": {
+    "label": "OUR VISION",
+    "title": "Why we built this",
+    "p1": "Power cuts in India are a shared, daily experience — but a strangely private one. When your power goes out, the first thing you do is check your phone to ask a group chat \"is it just my house?\" There's rarely a good answer, and even less a way to know if the whole street, the whole locality, or the whole city is affected.",
+    "p2": "powercuts.fyi exists to make that information collective instead of anecdotal. No signup, no app download, no calling a DISCOM helpline that never picks up — just a fast way to say \"it's out here\" and see if anyone nearby agrees.",
+    "p3": "It's intentionally simple. There's no ML outage prediction, no integration with utility company APIs (yet), no guarantee of accuracy. It's crowdsourced, which means it's only as good as the people reporting — but that's still better than nothing, which is what most of us have today."
+  },
+  "support": {
+    "label": "SUPPORT US",
+    "title": "Chip in for hosting",
+    "p1": "powercuts.fyi runs on a small server and a bit of stubbornness. Hosting bills tick up when whole states have a bad week for power — a small one-off contribution helps keep the site running.",
+    "p2": "If it has been useful to you, you can leave a tip on Ko-fi. The site stays free and anonymous.",
+    "cta": "Support on Ko-fi →"
+  },
+  "notFound": {
+    "label": "404",
+    "title": "Nothing here.",
+    "body": "This page doesn't exist. Maybe it got resolved."
+  }
+}

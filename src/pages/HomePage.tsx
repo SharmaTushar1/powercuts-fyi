@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useReports } from '../context/ReportsContext';
 import { Hero } from '../components/Hero';
 import { CtaBanner } from '../components/CtaBanner';
@@ -17,6 +18,7 @@ const NEARBY_LOCALITY_RADIUS_KM = 2;
 const NEARBY_LOCALITY_LIMIT = 200;
 
 export function HomePage() {
+  const { t } = useTranslation();
   const {
     incidents,
     aggregateStats,
@@ -88,7 +90,7 @@ export function HomePage() {
   const observe = async (incident: Incident, state: 'out' | 'back'): Promise<void> => {
     setActionError(null);
     if (!isTurnstileConfigured()) {
-      setActionError('Verification is not configured, so observations are paused.');
+      setActionError(t('common.verificationPaused'));
       return;
     }
     try {
@@ -100,13 +102,13 @@ export function HomePage() {
       });
     } catch (caught) {
       setActionError(
-        caught instanceof Error ? caught.message : 'Unable to record that observation.',
+        caught instanceof Error ? caught.message : t('common.unableToRecordObservation'),
       );
     }
   };
 
   if (loading) {
-    return <div className="page-loading mono">Loading reports…</div>;
+    return <div className="page-loading mono">{t('common.loadingReports')}</div>;
   }
 
   return (

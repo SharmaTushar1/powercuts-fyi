@@ -1,18 +1,19 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { KOFI_URL } from '../lib/site';
+import { localizedPath } from '../i18n/paths';
 import './InfoPage.css';
 
 export function SupportPage() {
+  const { t, i18n } = useTranslation();
+  const language = i18n.language === 'hi' ? 'hi' : 'en';
+
   return (
     <div className="info-page container-pad">
-      <div className="section-label">SUPPORT US</div>
-      <h1>Chip in for hosting</h1>
-      <p>
-        powercuts.fyi runs on a small server and a bit of stubbornness. Hosting bills tick up when
-        whole states have a bad week for power — a small one-off contribution helps keep the site
-        running.
-      </p>
-      <p>If it has been useful to you, you can leave a tip on Ko-fi. The site stays free and anonymous.</p>
+      <div className="section-label">{t('support.label')}</div>
+      <h1>{t('support.title')}</h1>
+      <p>{t('support.p1')}</p>
+      <p>{t('support.p2')}</p>
       <a
         className="btn btn-primary"
         href={KOFI_URL}
@@ -20,10 +21,10 @@ export function SupportPage() {
         rel="noreferrer"
         style={{ display: 'inline-block', marginBottom: 28 }}
       >
-        Support on Ko-fi →
+        {t('support.cta')}
       </a>
-      <Link to="/" className="btn btn-secondary">
-        ← back home
+      <Link to={localizedPath('/', language)} className="btn btn-secondary">
+        {t('common.backHome')}
       </Link>
     </div>
   );
