@@ -24,7 +24,7 @@
     "latestReport": "LATEST REPORT",
     "noReportsYet": "No reports yet",
     "reportedAgo": "reported {{elapsed}} ago",
-    "resolvedAfter": "resolved after {{elapsed}} ago",
+    "resolvedAfter": "resolved after {{elapsed}}",
     "cutsRightNow": "CUTS RIGHT NOW",
     "acrossIndia": "across India",
     "nearbyRightNow": "· {{count}} in {{place}} right now",
@@ -157,6 +157,7 @@
   "location": {
     "backToAll": "← back to all reports",
     "noReportsYet": "No reports yet for {{place}}. Be the first to report a cut here.",
+    "unableToLoad": "Unable to load reports right now. Try again in a moment.",
     "reportCutIn": "Report a cut in {{place}} →"
   },
   "vision": {

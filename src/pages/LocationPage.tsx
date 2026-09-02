@@ -37,6 +37,7 @@ export function LocationPage() {
 
   const { fetchIncidents, submitObservation } = useReports();
   const [incidents, setIncidents] = useState<Incident[] | null>(null);
+  const [loadError, setLoadError] = useState(false);
   const [activeCount, setActiveCount] = useState(0);
   const [resolving, setResolving] = useState<Incident | null>(null);
   const [pendingIds, setPendingIds] = useState<Set<string>>(new Set());
@@ -54,20 +55,23 @@ export function LocationPage() {
   useEffect(() => {
     let cancelled = false;
     setIncidents(null);
-    void Promise.all([
+    setActiveCount(0);
+    setLoadError(false);
+    void Promise.allSettled([
       fetchIncidents({ ...filterQuery, limit: VISIBLE_INCIDENTS_LIMIT }),
       fetchIncidents({ ...filterQuery, activeOnly: true, limit: 1 }),
-    ])
-      .then(([list, activeOnly]) => {
-        if (cancelled) return;
-        setIncidents(list.incidents);
-        setActiveCount(activeOnly.total);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setIncidents([]);
-        setActiveCount(0);
-      });
+    ]).then(([list, activeOnly]) => {
+      if (cancelled) return;
+      if (list.status === 'fulfilled') {
+        setIncidents(list.value.incidents);
+      }
+      if (activeOnly.status === 'fulfilled') {
+        setActiveCount(activeOnly.value.total);
+      }
+      if (list.status === 'rejected' || activeOnly.status === 'rejected') {
+        setLoadError(true);
+      }
+    });
     return () => {
       cancelled = true;
     };
@@ -77,12 +81,19 @@ export function LocationPage() {
   const description = locationDescription(resolved.displayName, activeCount, language);
   const origin = getSiteOrigin();
 
+  // Hindi routes live under /hi, so canonical/og URLs and JSON-LD must point at
+  // the locale-prefixed path rather than the bare English one.
+  const localizedPlace = useMemo(
+    () => ({ ...resolved, path: localizedPath(resolved.path, language) }),
+    [resolved, language],
+  );
+
   usePageMeta({
     title: locationDocumentTitle(resolved.displayName, language),
     description,
-    path: resolved.path,
+    path: localizedPlace.path,
     index: resolved.indexable || activeCount > 0,
-    jsonLd: locationJsonLd(origin, resolved, activeCount, language),
+    jsonLd: locationJsonLd(origin, localizedPlace, activeCount, language),
   });
 
   const observe = async (incident: Incident, state: 'out' | 'back'): Promise<void> => {
@@ -94,7 +105,20 @@ export function LocationPage() {
     setPendingIds((current) => new Set(current).add(incident.id));
     try {
       const token = await requestTurnstileToken('record-observation');
-      await submitObservation({ incidentId: incident.id, state, turnstileToken: token });
+      const result = await submitObservation({
+        incidentId: incident.id,
+        state,
+        turnstileToken: token,
+      });
+      const updated = result.incident;
+      setIncidents((current) =>
+        current?.map((item) => (item.id === updated.id ? updated : item)) ?? current,
+      );
+      if (incident.status !== updated.status) {
+        setActiveCount((count) =>
+          updated.status === 'ongoing' ? count + 1 : Math.max(count - 1, 0),
+        );
+      }
     } catch (caught) {
       setActionError(
         caught instanceof Error ? caught.message : t('common.unableToRecordObservation'),
@@ -124,10 +148,15 @@ export function LocationPage() {
       )}
 
       <div className="location-list">
-        {incidents === null && (
+        {loadError && (
+          <div className="location-error mono" role="alert">
+            {t('location.unableToLoad')}
+          </div>
+        )}
+        {!loadError && incidents === null && (
           <div className="location-loading mono">{t('common.loadingReports')}</div>
         )}
-        {incidents?.length === 0 && (
+        {!loadError && incidents?.length === 0 && (
           <div className="location-empty mono">
             {t('location.noReportsYet', { place: resolved.displayName })}
           </div>

@@ -1,4 +1,5 @@
 import type { MouseEvent } from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { KOFI_URL } from '../lib/site';
@@ -13,12 +14,45 @@ const SECTION_NAV = [
   { hash: 'how', labelKey: 'nav.howItWorks', className: 'nav-link' },
 ] as const;
 
+/**
+ * The home page renders a loading placeholder until reports arrive, so a
+ * cross-page jump to #feed has no target on the first frame. Retry for a
+ * bounded window instead of giving up after one frame.
+ */
+const SCROLL_ATTEMPT_LIMIT = 90;
+
+function scrollToSection(id: string): () => void {
+  let frame = 0;
+  let attempts = 0;
+  const attempt = (): void => {
+    const target = document.getElementById(id);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    attempts += 1;
+    if (attempts < SCROLL_ATTEMPT_LIMIT) {
+      frame = requestAnimationFrame(attempt);
+    }
+  };
+  frame = requestAnimationFrame(attempt);
+  return () => cancelAnimationFrame(frame);
+}
+
 export function SiteHeader() {
   const location = useLocation();
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const language = i18n.language === 'hi' ? 'hi' : 'en';
   const home = localizedPath('/', language);
+
+  const hashTarget = location.hash.replace(/^#/u, '');
+  useEffect(() => {
+    if (!hashTarget) {
+      return;
+    }
+    return scrollToSection(hashTarget);
+  }, [hashTarget, location.pathname]);
 
   const handleSectionNav = (
     event: MouseEvent<HTMLAnchorElement>,

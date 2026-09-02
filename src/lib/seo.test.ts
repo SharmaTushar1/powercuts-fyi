@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import {
   displayNameFromSlug,
   homeDocumentTitle,
+  localizedSeoPath,
   locationDocumentTitle,
+  locationJsonLd,
   powercutHeading,
   powercutPath,
   resolveSeoPlace,
@@ -47,5 +49,26 @@ describe('seo place URLs', () => {
     expect(paths).toContain('/powercut/mumbai');
     expect(paths).toContain('/powercut/delhi');
     expect(paths).not.toContain('/powercut/bangalore');
+  });
+
+  it('prefixes Hindi SEO paths with /hi and leaves English bare', () => {
+    expect(localizedSeoPath('/powercut/bengaluru', 'hi')).toBe('/hi/powercut/bengaluru');
+    expect(localizedSeoPath('/', 'hi')).toBe('/hi');
+    expect(localizedSeoPath('/powercut/bengaluru', 'en')).toBe('/powercut/bengaluru');
+    expect(localizedSeoPath('/')).toBe('/');
+  });
+
+  it('builds Hindi JSON-LD from the locale-prefixed page URL', () => {
+    const resolved = resolveSeoPlace('bengaluru');
+    const hindiPlace = {
+      ...resolved,
+      path: localizedSeoPath(resolved.path, 'hi'),
+    };
+    const graph = locationJsonLd('https://powercuts.fyi', hindiPlace, 2, 'hi')[
+      '@graph'
+    ] as Record<string, unknown>[];
+    const webPage = graph.find((node) => node['@type'] === 'WebPage');
+    expect(webPage?.url).toBe('https://powercuts.fyi/hi/powercut/bengaluru');
+    expect(graph[0]?.inLanguage).toBe('hi-IN');
   });
 });

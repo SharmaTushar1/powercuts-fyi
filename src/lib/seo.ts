@@ -141,9 +141,20 @@ export function statePath(state: string): string {
   return `/in/${slugifyPlace(state)}`;
 }
 
+/** Prefixes an SEO path with /hi for Hindi, leaves it bare for English. */
+export function localizedSeoPath(path: string, language: SeoLanguage = 'en'): string {
+  if (language !== 'hi') {
+    return path;
+  }
+  return path === '/' ? '/hi' : `/hi${path}`;
+}
+
 interface SeoStrings {
   homeTitle: string;
   homeDescription: string;
+  homeHeading: string;
+  homeCitiesHeading: string;
+  homeReportLink: string;
   inLanguage: string;
   heading: (place: string) => string;
   locationTitleSuffix: string;
@@ -157,6 +168,9 @@ const SEO_COPY: Record<SeoLanguage, SeoStrings> = {
     homeTitle: 'Live power cuts in India | powercuts.fyi',
     homeDescription:
       'Live power cut, power outage, and electricity cut reports across India. Search your city or locality, see if the lights are out nearby, and report a cut with no signup.',
+    homeHeading: 'Live power cuts in India',
+    homeCitiesHeading: 'Power cut in your city',
+    homeReportLink: 'Report a power cut',
     inLanguage: 'en-IN',
     heading: (place) => `Power cut in ${place}`,
     locationTitleSuffix: '— live outage reports | powercuts.fyi',
@@ -183,6 +197,9 @@ const SEO_COPY: Record<SeoLanguage, SeoStrings> = {
     homeTitle: 'भारत में लाइव बिजली कटौती | powercuts.fyi',
     homeDescription:
       'पूरे भारत में लाइव बिजली कटौती, पावर आउटेज, और इलेक्ट्रिसिटी कट की रिपोर्ट्स। अपना शहर या इलाका खोजें, देखें कि आस-पास बिजली गई है या नहीं, और बिना साइनअप के रिपोर्ट करें।',
+    homeHeading: 'भारत में लाइव बिजली कटौती',
+    homeCitiesHeading: 'आपके शहर में बिजली कटौती',
+    homeReportLink: 'बिजली कटौती की रिपोर्ट करें',
     inLanguage: 'hi-IN',
     heading: (place) => `${place} में बिजली कटौती`,
     locationTitleSuffix: '— लाइव आउटेज रिपोर्ट्स | powercuts.fyi',
@@ -232,6 +249,18 @@ export function homeDocumentTitle(language: SeoLanguage = 'en'): string {
 
 export function homeDescription(language: SeoLanguage = 'en'): string {
   return SEO_COPY[language].homeDescription;
+}
+
+export function homeHeading(language: SeoLanguage = 'en'): string {
+  return SEO_COPY[language].homeHeading;
+}
+
+export function homeCitiesHeading(language: SeoLanguage = 'en'): string {
+  return SEO_COPY[language].homeCitiesHeading;
+}
+
+export function homeReportLinkLabel(language: SeoLanguage = 'en'): string {
+  return SEO_COPY[language].homeReportLink;
 }
 
 export function resolveSeoPlace(

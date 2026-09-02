@@ -70,4 +70,37 @@ describe('crawler middleware', () => {
     expect(result).toBeUndefined();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
+
+  it('falls back to the app shell when an SEO fetch fails', async () => {
+    vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('upstream down'));
+    await expect(middleware(request('/', GOOGLEBOT))).resolves.toBeUndefined();
+    await expect(
+      middleware(request('/powercut/jaipur', GOOGLEBOT)),
+    ).resolves.toBeUndefined();
+  });
+
+  it('forwards the Hindi language to the home SEO handler', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('ok'));
+    await middleware(request('/hi', GOOGLEBOT));
+    const calledUrl = new URL(fetchSpy.mock.calls[0]?.[0] as string);
+    expect(calledUrl.pathname).toBe('/api/seo/home');
+    expect(calledUrl.searchParams.get('lang')).toBe('hi');
+  });
+
+  it('forwards the Hindi language and place params for /hi location pages', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('ok'));
+    await middleware(request('/hi/powercut/bengaluru/hsr-layout', GOOGLEBOT));
+    const calledUrl = new URL(fetchSpy.mock.calls[0]?.[0] as string);
+    expect(calledUrl.pathname).toBe('/api/seo/location');
+    expect(calledUrl.searchParams.get('city')).toBe('bengaluru');
+    expect(calledUrl.searchParams.get('locality')).toBe('hsr-layout');
+    expect(calledUrl.searchParams.get('lang')).toBe('hi');
+  });
+
+  it('omits the lang param for English routes', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('ok'));
+    await middleware(request('/powercut/jaipur', GOOGLEBOT));
+    const calledUrl = new URL(fetchSpy.mock.calls[0]?.[0] as string);
+    expect(calledUrl.searchParams.get('lang')).toBeNull();
+  });
 });

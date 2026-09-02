@@ -30,6 +30,7 @@ function App() {
             <Route path="/in/:state" element={<LocationPage />} />
             <Route path="/vision" element={<VisionPage />} />
             <Route path="/support" element={<SupportPage />} />
+            <Route path="/r/:slug" element={<PermalinkPage />} />
           </Route>
           <Route path="/hi" element={<LocaleRoot language="hi" />}>
             <Route index element={<HomePage />} />
@@ -39,8 +40,9 @@ function App() {
             <Route path="in/:state" element={<LocationPage />} />
             <Route path="vision" element={<VisionPage />} />
             <Route path="support" element={<SupportPage />} />
+            <Route path="r/:slug" element={<PermalinkPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
-          <Route path="/r/:slug" element={<PermalinkPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

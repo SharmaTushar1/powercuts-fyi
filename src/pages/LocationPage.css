@@ -38,6 +38,12 @@
   padding: 24px 4px;
 }
 
+.location-error {
+  color: var(--muted-2);
+  font-size: 13px;
+  padding: 24px 4px;
+}
+
 .location-report-cta {
   display: inline-block;
   margin-bottom: 48px;

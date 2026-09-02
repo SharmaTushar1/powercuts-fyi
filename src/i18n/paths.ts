@@ -1,11 +1,9 @@
 import type { SupportedLanguage } from './index';
+import { localizedSeoPath } from '../lib/seo';
 
 /** Prefixes a path with /hi for Hindi, leaves it bare for English. */
 export function localizedPath(path: string, language: SupportedLanguage): string {
-  if (language !== 'hi') {
-    return path;
-  }
-  return path === '/' ? '/hi' : `/hi${path}`;
+  return localizedSeoPath(path, language);
 }
 
 /** Strips a leading /hi segment, if present, back to the bare English path. */
